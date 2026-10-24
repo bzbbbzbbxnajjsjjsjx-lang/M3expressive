@@ -215,7 +215,48 @@ fun MyExpressiveTheme(
 
 ## FAZ 3: Bileşen Kuralları
 
-### 3.1 Tercih Edilen M3 Expressive Bileşenleri
+### 3.1 Stable M3 Bileşen Kataloğu (Öncelikli)
+
+Varsayılan olarak önce stable M3 bileşenleri kullanılır. Expressive bileşenler yalnızca stable M3 karşılığı yoksa veya tasarım gereği özellikle istenmişse tercih edilir. Kural: "Önce stable M3, yetmezse Expressive."
+
+**Eylemler**
+- Button, ElevatedButton, FilledTonalButton, OutlinedButton, TextButton
+- FloatingActionButton, SmallFloatingActionButton, LargeFloatingActionButton, ExtendedFloatingActionButton
+- IconButton, IconToggleButton, FilledIconButton, FilledTonalIconButton, OutlinedIconButton
+
+**Kapsayıcılar**
+- Card, ElevatedCard, OutlinedCard
+- BottomSheetScaffold, ModalBottomSheet
+- AlertDialog
+- Badge, BadgedBox
+
+**Gezinme**
+- TopAppBar (ve varyantları), BottomAppBar
+- NavigationBar, NavigationBarItem
+- NavigationRail, NavigationRailItem
+- ModalNavigationDrawer, PermanentNavigationDrawer, DismissibleNavigationDrawer
+- Scaffold
+
+**Seçim**
+- Checkbox, TriStateCheckbox
+- Switch
+- RadioButton
+- DropdownMenu, DropdownMenuItem
+- FilterChip, AssistChip, InputChip, SuggestionChip (ve elevated varyantları)
+
+**Metin Girişi**
+- TextField, OutlinedTextField
+- ExposedDropdownMenuBox
+
+**Diğer**
+- ListItem
+- HorizontalDivider, VerticalDivider
+- Snackbar
+- DatePicker, DatePickerDialog, DateRangePicker
+
+Kaynak: androidx.compose.material3 API referansı. Bu liste dışındaki bileşenler gerekiyorsa önce stable M3'te karşılığı olup olmadığı kontrol edilir.
+
+### 3.2 Tercih Edilen M3 Expressive Bileşenleri
 
 - **HorizontalFloatingToolbar:** Ekrandaki birincil eylem grubu için. Tek eylem için kullanılmaz; `FloatingActionButton` kullan.
 - **FlexibleTopAppBar:** Kaydırmayla daralan büyük başlıklı ekranlar için. Sabit başlıklı kısa ekranlarda kullanılmaz.
@@ -226,13 +267,13 @@ fun MyExpressiveTheme(
 
 Expressive bileşenler `@ExperimentalMaterial3ExpressiveApi` gerektirir. Opt-in'ler yalnızca `presentation/theme/ExperimentalOptIns.kt` içinde toplanır.
 
-### 3.2 Yasaklar
+### 3.3 Yasaklar
 
 - Material 2 görünümlü bileşen kullanılmaz (`androidx.compose.material`).
 - Sabit renk, şekil veya süre yazılmaz; token kullanılır.
 - Expressive bileşen, Expressive olmayan temayla karıştırılmaz.
 
-### 3.3 Doğrulama
+### 3.4 Doğrulama
 
 - API adları ve sürümler `libs.versions.toml` ve derleme çıktısından teyit edilir.
 - `CLAUDE.md`'ye spesifik sürüm numarası yazılmaz.
