@@ -22,7 +22,7 @@ minSdk 37 olduğu için alt sürümler için `Build.VERSION.SDK_INT` kontrolü, 
 |--------|---------------------------|------------|
 | Dil | Kotlin **2.2.0+** | Java yasak. Hilt 1.4.0 en az KGP 2.2.0 gerektirir. |
 | UI | Jetpack Compose BOM **2026.08.00** (Compose 1.12 hedefi) | Compose-first. XML ve ViewBinding yasak. Kütüphane sürümlerini BOM yönetir, Compose modüllerine elle sürüm yazma. |
-| Tasarım | Material 3 **1.4.0** (kararlı baseline); Expressive için **1.5.0-alpha** (pinli, ör. `1.5.0-alpha26`) | Expressive API'ler 1.4.0'da yoktur, 1.5.0 kararlı değildir. Compose BOM'un material3 sürümünü kapsadığı doğrulanmadığı için material3 sürümü ayrıca pinlenir. Bkz. 2.0. |
+| Tasarım | Material 3 (kararlı baseline); Expressive API'ler için alpha hattı (pinli) | Expressive API'ler kararlı baseline'da yoktur. Sürüm numaraları `libs.versions.toml`'da tutulur. Bkz. 2.0. |
 | Build | **AGP 9.2.0+** | compileSdk 37 ve Compose için gereklidir. |
 | DI | Hilt: Dagger Hilt + **androidx.hilt 1.4.0** | Annotation işleme için **KSP** kullan. KAPT yasak. |
 | Mimari | MVVM + Clean Architecture | Bkz. 1.4 |
@@ -113,58 +113,51 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 ## FAZ 2: Tasarım Sistemi (Renk, Tipografi, Şekil, Hareket)
 
-> **Doğrulama notu:** Bu fazda "✅ Doğrulandı" etiketli öğeler standart M3 değerleri veya arama ile teyit edilmiş API adlarıdır. "⚠️ Doğrulanmadı" etiketli öğeler M3 1.5.0 API'sinde derlenerek kontrol edilmeden kullanılmaz. Bu öğeler için tahmin yoluyla kod yazma.
+### 2.0 Sürüm Politikası
 
-### 2.0 Sürüm ve Deneysel API Politikası
+- Sürümler `gradle/libs.versions.toml` içinde **pinlenir**. Değerler Android Studio'nun "Dependency Updates" önerisinden veya `./gradlew :app:dependencies` çıktısından alınır.
+- `CLAUDE.md` içinde spesifik alpha sürüm numarası **yazılmaz**. Yalnızca iki kural yazılır: kararlı baseline kullanılır, Expressive API'ler opt-in'dir.
+- Sürüm yükseltmesi: önce derle, hata yoksa commit et. Kaynak olarak build çıktısı kullanılır, dokümantasyon değil.
 
-- Kararlı `material3` baseline: **1.4.0**. Expressive API'ler 1.5.0-alpha hattındadır.
-- Tüm `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` kullanımları **yalnızca** `presentation/theme/ExperimentalOptIns.kt` dosyasında toplanır. Kararlı ve deneysel API'ler aynı dosyada karıştırılmaz.
-- Alpha sürümler `gradle/libs.versions.toml` içinde pinlenir (ör. `material3 = "1.5.0-alpha26"`). `latest.release` kullanılmaz.
-- Sürüm yükseltmesinde önce `./gradlew :app:compileDebugKotlin` ile derleme doğrulanır.
-- Expressive API'lerin kararlılaşması 2026 sonu için beklenmektedir (doğrulanmadı). Kararlılaştığında opt-in'ler kaldırılır ve bu bölüm güncellenir.
+### 2.1 Renk Sistemi (✅ Doğrulanmış)
 
-### 2.1 Renk Sistemi (Color Tokens)
+- **Dinamik renk (Dynamic Color):** Standart M3 API'leriyle kullanılır. `minSdk 37` olduğu için koşulsuz etkindir; fallback palet yazılmaz.
+- **Tonal paletler:** `primary`, `secondary`, `tertiary`, `neutral`, `neutralVariant`, `error`. Her biri 0–100 ton adımına sahiptir.
+- **Kural:** Hex kodu yasaktır. Renkler her zaman `MaterialTheme.colorScheme` rolleri üzerinden kullanılır.
+- **Zorunlu roller:** `primary`, `onPrimary`, `primaryContainer`, `onPrimaryContainer`, `secondary`, `tertiary`, `surface`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`, `surfaceContainerHighest`, `outline`, `error`.
+- **Yüzey derinliği:** Gölge yerine `surfaceContainer*` seviyeleri ve `tonalElevation` kullanılır.
 
-- ✅ **Dinamik renk:** `minSdk 37` olduğu için dinamik renk her zaman kullanılabilir. Statik palet fallback'i yazma. `dynamicLightColorScheme(context)` ve `dynamicDarkColorScheme(context)` kullan.
-- ✅ **Tonal paletler:** `primary`, `secondary`, `tertiary`, `neutral`, `neutral-variant`, `error`. Her biri 0–100 ton adımına sahiptir.
-- **Hex yasağı:** Kodda hex renk literal'i (`Color(0xFF...)`) yalnızca `presentation/theme/Color.kt` içinde bulunabilir. Diğer her yerde renk yalnızca `MaterialTheme.colorScheme` rolleri üzerinden kullanılır.
-- ✅ **Zorunlu renk rolleri:** `primary`, `onPrimary`, `primaryContainer`, `onPrimaryContainer`, `secondary`, `tertiary`, `surface`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`, `surfaceContainerHighest`, `outline`, `error`. Bunlar standart M3 `ColorScheme` rolleridir; derleme ile teyit et.
-- **Yükseklik:** Derinlik için önce `surfaceContainer*` seviyeleri kullanılır. `Surface(tonalElevation = ...)` yalnızca bu seviyeler yetmediğinde kullanılır.
+### 2.2 Tipografi (✅ Baseline / ⚠️ Emphasized derleme ile teyit)
 
-### 2.2 Tipografi (Typography)
+- **Baseline ölçek:** 15 rol (`displayLarge` → `labelSmall`). ✅ Standart M3.
+- **Emphasized ölçek:** 15 rolün bir kalınlık adımı yüksek varyantları. ✅ Kavramsal olarak M3 Expressive'te mevcut. ⚠️ Compose'daki birebir erişim yolu (ör. `MaterialTheme.typography.emphasized...`) derleme ile teyit edilecek.
+- **Değişken font ekseni `ROND`:** ✅ `M3EVariableFontAxes` üzerinden erişilebilir. ⚠️ Projede kullanılacaksa derleme ile doğrulanacak.
+- **Kural:** `MaterialTheme.typography` dışında sabit `fontSize` veya `fontWeight` yazılmaz.
 
-- ✅ **Baseline ölçek:** 15 standart M3 rolü: `display{Large,Medium,Small}`, `headline{Large,Medium,Small}`, `title{Large,Medium,Small}`, `body{Large,Medium,Small}`, `label{Large,Medium,Small}`.
-- ⚠️ **Emphasized varyantlar:** Compose M3 API'sinde doğrulanmadı. Doğrulanana kadar emphasized stil tanımlama ve kullanma. Yalnızca baseline roller kullanılır.
-- ⚠️ **Roboto Flex:** Android'in Roboto Flex'e geçiş rehberi mevcut. Ancak Compose'da değişken font ekseni ayarı (`FontVariation`) ve `opsz` ekseninin kullanımı API'de doğrulanmalı. `ROND` ekseni güncellemeye göre `M3EVariableFontAxes.rond` (0–100) olarak vardır; bu oturumda bağımsız doğrulanmadı, kullanmadan önce derleme ile teyit et.
-- **Kural:** `MaterialTheme.typography` dışında sabit `fontSize`, `fontWeight` veya `fontFamily` yazma.
+### 2.3 Şekil Sistemi (✅ MaterialShapes doğrulandı)
 
-### 2.3 Şekil Sistemi (Shape System)
+- **Köşe ölçeği:** `extraSmall` (4dp), `small` (8dp), `medium` (12dp), `large` (16dp), `extraLarge` (28dp), `full` (pill). ✅ Standart M3.
+- **`MaterialShapes`:** `Cookie4Sided`, `Cookie6Sided`, `Cookie9Sided`, `Cookie12Sided`, `ClamShell`, `Flower`, `Clover4Leaf`, `Clover8Leaf` vb. ✅ Mevcut; `RoundedPolygon` döndürür.
+- **`Morph`:** Şekiller arası geçiş için sınıf mevcut. ⚠️ Bileşen bazlı bağlama kodu (ör. FAB morph) ilgili bileşenin API'sinden teyit edilecek.
+- **Opt-in:** `MaterialShapes` kullanımı `@ExperimentalMaterial3ExpressiveApi` gerektirir. ✅ Doğrulandı.
+- **Kural:** `MaterialTheme.shapes` dışında sabit `RoundedCornerShape(dp)` yazılmaz. M3 Expressive şekilleri bu kuralın dışındadır.
 
-- ✅ **Köşe ölçeği:** `extraSmall` 4dp, `small` 8dp, `medium` 12dp, `large` 16dp, `extraLarge` 28dp. `full` tam yuvarlak (pill/circle) şekildir. Bunlar standart M3 değerleridir.
-- ✅ **Expressive şekiller:** `MaterialShapes` (`RoundedPolygon` tabanlı). Doğrulanan adlar: `Flower`, `ClamShell`, `Cookie4Sided`–`Cookie12Sided`, `Clover4Leaf`, `Clover8Leaf`. Bu API `@ExperimentalMaterial3ExpressiveApi` ile işaretlidir.
-- ⚠️ **Şekil sayısı:** "35 şekil" bilgisi Compose için doğrulanmadı. Bu sayıya dayanma; `MaterialShapes` içindeki gerçek adları kullan.
-- ⚠️ **Morphing:** Compose'da morph kullanım kodu doğrulanmadı. İlk uygulamadan önce resmi Android geliştirici rehberine bak.
-- **Opt-in:** `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` yalnızca `ExperimentalOptIns.kt` içinde toplanır (bkz. 2.0).
-- **Kural:** `MaterialTheme.shapes` dışında `RoundedCornerShape(dp)` yazma.
+### 2.4 Hareket Fiziği (✅ MotionScheme / ⚠️ token adları)
 
-### 2.4 Hareket Sistemi (Motion)
+- **`MotionScheme`:** ✅ Mevcut. `standard` ve `expressive` şemaları sunulur.
+- **`defaultSpatialSpec()` ve `defaultEffectsSpec()`:** ✅ Doğrulandı. Spatial spring overshoot'a izin verir; effects spring critically damped'dır.
+- **Kural:** Doğrusal (linear) animasyon yasaktır. Konum, boyut ve şekil için spatial spring; renk ve opaklık için effects spring kullanılır.
+- **⚠️ Spesifik token adları ve emphasized easing:** Bu projede kullanılacaksa derleme ile teyit edilecek. Teyit edilmeden `CLAUDE.md`'ye token adı yazılmaz.
 
-- ⚠️ **Motion scheme:** `MotionScheme` (`expressive()` / `standard()`) ve `defaultSpatialSpec()` / `defaultEffectsSpec()` metotları güncellemeye göre vardır. Birebir spring token adları ("12 token") sürüme göre değişebilir; kullanmadan önce alpha sürümde derleme ile kontrol et.
-- **Kavramsal kural (doğrulanmış tasarım ilkesi):** Konum, boyut ve şekil değişimleri için **spatial** spring; renk ve opaklık için **effects** spring kullanılır.
-- **Linear animasyon yasaktır.** Konum, boyut veya renk geçişlerinde `tween` ile doğrusal easing kullanma.
-- ⚠️ **Emphasized easing:** Doğrulanmadı; kullanma.
-- **Hız kademeleri:** `fast`, `default`, `slow`. Sürelerin ve spring değerlerinin kaynağı `Motion.kt` olur.
-- **Erişilebilirlik:** Hareket azaltma (reduce motion) davranışı Faz 3'te ele alınır.
+### 2.5 Tema İskeleti
 
-### 2.5 Tema İskeleti (`Theme.kt`)
-
-- `presentation/theme/Theme.kt` tek giriş noktasıdır.
-- ⚠️ **`MaterialExpressiveTheme`:** Güncellemeye göre 1.5.0-alpha hattında ve opt-in arkasındadır. Alpha sürüm pinlenip derleme doğrulanana kadar `MaterialTheme` kullanılır; motion scheme bağlama adımı ayrı bir TODO olarak bırakılır.
-- **Parametreler:** `darkTheme: Boolean = isSystemInDarkTheme()`, `colorScheme` (dinamik), `typography`, `shapes`, ve doğrulanırsa `motionScheme`.
-- **Dinamik renk:** `minSdk 37` olduğundan koşul yazma. Dinamik şema her zaman seçilir.
+- **`MaterialExpressiveTheme`:** ✅ Mevcut. Expressive API'ler `@ExperimentalMaterial3ExpressiveApi` opt-in'i gerektirir.
+- **Opt-in konumu:** Tüm opt-in'ler yalnızca `presentation/theme/ExperimentalOptIns.kt` içinde toplanır.
+- **Parametreler:** `typography`, `shapes` ve `motionScheme` tema içinde tanımlanır.
+- **Dinamik renk:** `minSdk 37` nedeniyle koşulsuz kullanılır.
 
 ```kotlin
-// Örnek iskelet: API adları M3 1.5.0'da derleme ile doğrulanmalıdır.
+// İskelet. API adları derleme ile doğrulanmalıdır.
 @Composable
 fun MyExpressiveTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -185,27 +178,18 @@ fun MyExpressiveTheme(
 }
 ```
 
-### 2.6 Doğrulama Durumu Özeti
+### 2.6 Doğrulama Tablosu
 
-| Öğe | Durum |
-|-----|-------|
-| Dinamik renk (`dynamicLight/DarkColorScheme`) | ✅ Standart M3 |
-| Renk rolleri ve `surfaceContainer*` | ✅ Standart M3 |
-| 15 baseline tipografi rolü | ✅ Standart M3 |
-| Emphasized tipografi | ⚠️ Güncellemeye göre var; bağımsız doğrulanmadı |
-| Roboto Flex `opsz` / `ROND` | ⚠️ `ROND` güncellemeye göre var; bağımsız doğrulanmadı |
-| Köşe ölçeği 4/8/12/16/28dp | ✅ Standart M3 |
-| `MaterialShapes` (Flower, ClamShell, Cookie, Clover) | ✅ Compose API'sinde var |
-| "35 şekil" sayısı | ⚠️ Compose için doğrulanmadı |
-| Morph kullanım kodu | ⚠️ Doğrulanmadı |
-| `MotionScheme` (`defaultSpatialSpec`, `defaultEffectsSpec`) | ✅ Güncellemeye göre var |
-| 12 spring token'ın birebir adları | ⚠️ Sürüme göre değişebilir |
-| Emphasized easing | ⚠️ Doğrulanmadı |
-| `MaterialExpressiveTheme` | ⚠️ 1.5.0-alpha, opt-in; derleme ile teyit et |
-
-### 2.7 Faz 2 Kabul Kriterleri
-
-- [ ] Hex literal yalnızca `Color.kt` içinde bulunur.
-- [ ] Tipografi, şekil ve renk yalnızca `MaterialTheme` üzerinden okunur.
-- [ ] Doğrulanmamış tüm API'ler (tabloda ⚠️) derleme ile teyit edilmiş ya da kullanılmamıştır.
-- [ ] `Theme.kt` tek giriş noktasıdır ve Preview ile hem açık hem koyu temada render olur.
+| Öğe | Durum | Not |
+|-----|-------|-----|
+| Dinamik renk API'leri ve renk rolleri | ✅ | Standart M3 |
+| 15 baseline tipografi rolü | ✅ | Standart M3 |
+| Köşe ölçeği | ✅ | 4/8/12/16/28/pill |
+| `MaterialShapes` ve şekil adları | ✅ | Cookie*, ClamShell, Flower, Clover* |
+| `MotionScheme` (`standard`/`expressive`) | ✅ | `defaultSpatialSpec`/`defaultEffectsSpec` |
+| `MaterialExpressiveTheme` | ✅ | Opt-in gerektirir |
+| Emphasized tipografi erişim yolu | ⚠️ | Derleme ile teyit |
+| `ROND` ekseni kullanımı | ⚠️ | Derleme ile teyit |
+| Morph bileşen bağlama kodu | ⚠️ | Bileşen API'sine göre |
+| Spesifik spring token adları | ⚠️ | Derleme ile teyit |
+| Sürüm numaraları | ⚠️ | `libs.versions.toml` ve Gradle çıktısından; `CLAUDE.md`'ye yazılmaz |
