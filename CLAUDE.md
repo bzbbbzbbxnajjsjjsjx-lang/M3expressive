@@ -14,6 +14,12 @@ Bu dosya, bu repodaki her değişiklikten önce okunmalıdır. Aşağıdaki sür
 - Expressive API'leri (`MaterialExpressiveTheme`, `MotionScheme.expressive()`, `MaterialShapes`, `HorizontalFloatingToolbar`, `SegmentedListItem` vb.) opt-in gerektirir ve deneysel hattadır.
 - Kural: Bir ekran önce stable M3 ile kurulur; Expressive katmanı (şekil morphing, yay fiziği, vurgulu tipografi) üzerine eklenir. Ters sıra yasaktır.
 
+**YANLIŞ örnekler:**
+- Yanlış: `material3-expressive` gibi ayrı bir bağımlılık eklemek.
+- Yanlış: Expressive bileşeni, stable M3 katmanı kurulmadan doğrudan bir ekrana yazmak.
+- Yanlış: `@ExperimentalMaterial3ExpressiveApi` opt-in'ini `ExperimentalOptIns.kt` dışında yazmak.
+- Yanlış: `MaterialExpressiveTheme` ile sabit renk, şekil ya da süre yazmak.
+
 ### 1.1 Proje Kimliği
 
 - **Proje adı:** MyExpressiveApp (yer tutucu)
@@ -86,14 +92,14 @@ Yeni dosya eklerken bu yapıya uy. Yeni bir üst klasör açmadan önce bu dosya
 
 - **Compose-first.** Activity'ler `ComponentActivity` olur ve `setContent {}` kullanır. Fragment, XML layout ve ViewBinding kullanılmaz.
 - **Tema:** Tüm tema tanımları `presentation/theme/` altındadır. `Theme.kt` tek giriş noktasıdır. Renk, tipografi, şekil ve hareket (`Motion.kt`) değerleri bu dosyalar dışında hardcode edilmez.
-- **Expressive bileşenler:** `HorizontalFloatingToolbar`, `FlexibleTopAppBar`, `SegmentedListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenler 1.5.0-alpha hattındadır ve `@ExperimentalMaterial3ExpressiveApi` arkasındadır. Tam adı ve parametreleri derleme ile doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma. Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
+- **Expressive bileşenler:** `HorizontalFloatingToolbar`, `FlexibleTopAppBar`, `SegmentedListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenler deneysel hattadır ve `@ExperimentalMaterial3ExpressiveApi` arkasındadır. Tam adı ve parametreleri derleme ile doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma. Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
 - **Hareket (Motion):** Animasyon sabitleri `Motion.kt` içinde tanımlanır.
 - **Wide Color Gamut ve Mesh Gradient** kullanımı yalnızca Compose API'sinde derleme ile doğrulandıktan sonra eklenir.
 
 ### 1.7 Hilt Kuralları
 
 - Uygulama sınıfı `@HiltAndroidApp` ile işaretlenir.
-- Activity ve Fragment'lar yerine Composable ekranlarında `hiltViewModel()` kullanılır. Bu fonksiyon `androidx.hilt` 1.4.0 ile gelir.
+- Activity ve Fragment'lar yerine Composable ekranlarında `hiltViewModel()` kullanılır. Bu fonksiyon `androidx.hilt`, `libs.versions.toml`'da pinlenen sürümle gelir; değer Gradle çıktısından alınır.
 - ViewModel'ler `@HiltViewModel` ile işaretlenir ve constructor injection kullanır.
 - Bağlama tanımları `di/` altındaki modüllerde yapılır. Repository arayüzü ile implementasyonu arasındaki bağlama `@Binds` ile yapılır.
 - Annotation işleme yalnızca KSP ile yapılır.
@@ -155,7 +161,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 ### 2.4 Hareket Fiziği (✅ MotionScheme / ⚠️ token adları)
 
-- **`MotionScheme`:** ✅ Mevcut. `standard` ve `expressive` şemaları sunulur.
+- **MotionScheme standard:** ✅ (stable M3). **MotionScheme.expressive():** ⚠️ (deneysel hat, opt-in gerektirir).
 - **`defaultSpatialSpec()` ve `defaultEffectsSpec()`:** ✅ Doğrulandı. Spatial spring overshoot'a izin verir; effects spring critically damped'dır.
 - **Kural:** Doğrusal (linear) animasyon yasaktır. Konum, boyut ve şekil için spatial spring; renk ve opaklık için effects spring kullanılır.
 - **⚠️ Spesifik token adları ve emphasized easing:** Bu projede kullanılacaksa derleme ile teyit edilecek. Teyit edilmeden `CLAUDE.md`'ye token adı yazılmaz.
@@ -197,7 +203,7 @@ fun MyExpressiveTheme(
 | 15 baseline tipografi rolü | ✅ | Standart M3 |
 | Köşe ölçeği | ✅ | 4/8/12/16/28/pill |
 | `MaterialShapes` ve şekil adları | ✅ | Cookie*, ClamShell, Flower, Clover* |
-| `MotionScheme` (`standard`/`expressive`) | ✅ | `defaultSpatialSpec`/`defaultEffectsSpec` |
+| `MotionScheme` (`standard`/`expressive`) | standard ✅ / expressive ⚠️ | expressive deneysel, opt-in gerektirir |
 | `MaterialExpressiveTheme` | ⚠️ (deneysel hatta; derleme ile teyit edilecek) | Opt-in gerektirir |
 | Emphasized tipografi erişim yolu | ⚠️ | Derleme ile teyit |
 | `ROND` ekseni kullanımı | ⚠️ | Derleme ile teyit |
