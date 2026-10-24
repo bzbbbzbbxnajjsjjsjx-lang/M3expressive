@@ -193,3 +193,29 @@ fun MyExpressiveTheme(
 | Morph bileşen bağlama kodu | ⚠️ | Bileşen API'sine göre |
 | Spesifik spring token adları | ⚠️ | Derleme ile teyit |
 | Sürüm numaraları | ⚠️ | `libs.versions.toml` ve Gradle çıktısından; `CLAUDE.md`'ye yazılmaz |
+
+---
+
+## FAZ 3: Bileşen Kuralları
+
+### 3.1 Tercih Edilen M3 Expressive Bileşenleri
+
+- **HorizontalFloatingToolbar:** Ekrandaki birincil eylem grubu için. Tek eylem için kullanılmaz; `FloatingActionButton` kullan.
+- **FlexibleTopAppBar:** Kaydırmayla daralan büyük başlıklı ekranlar için. Sabit başlıklı kısa ekranlarda kullanılmaz.
+- **ButtonGroup:** 2–5 ilişkili eylem veya seçenek için. Tek buton için kullanılmaz.
+- **M3LoadingIndicator:** Süresi belirsiz yüklemeler için. İlerlemesi bilinen işlemlerde kullanılmaz; ilerleme göstergesi kullan.
+- **SegmentedListItem:** Gruplanmış liste öğeleri için (ilk, orta, son köşe şekilleri). Tek öğelik listede veya gruplanmamış listede kullanılmaz.
+- **MaterialShapes:** Dekoratif veya seçili durum şekilleri için (ör. morph). İşlevsel yüzeylerde (kart, buton, alan) `MaterialTheme.shapes` kullanılır.
+
+Expressive bileşenler `@ExperimentalMaterial3ExpressiveApi` gerektirir. Opt-in'ler yalnızca `presentation/theme/ExperimentalOptIns.kt` içinde toplanır.
+
+### 3.2 Yasaklar
+
+- Material 2 görünümlü bileşen kullanılmaz (`androidx.compose.material`).
+- Sabit renk, şekil veya süre yazılmaz; token kullanılır.
+- Expressive bileşen, Expressive olmayan temayla karıştırılmaz.
+
+### 3.3 Doğrulama
+
+- API adları ve sürümler `libs.versions.toml` ve derleme çıktısından teyit edilir.
+- `CLAUDE.md`'ye spesifik sürüm numarası yazılmaz.
