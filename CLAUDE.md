@@ -8,6 +8,8 @@ Bu dosya, bu repodaki her değişiklikten önce okunmalıdır. Aşağıdaki sür
 
 ## 1.0 Tasarım İlkesi (Değişmez)
 
+Amaç: Sadece görsel olarak etkileyici değil, aynı zamanda kullanımı doğal ve keyifli hissettiren bir arayüz oluşturmak. M3 Expressive'in hareket fiziği, şekil morphing ve vurgulu tipografi gibi özellikleri, etkileşim kalitesini artırmak için işlevsel araçlar olarak kullanılır.
+
 - Material 3, projenin **temelidir**. Expressive, M3'ün yerine geçmez; onun üzerine binen bir katmandır.
 - Ayrı bir "material3-expressive" paketi **yoktur**. Tüm Expressive özellikleri `androidx.compose.material3:material3` içinde gelir.
 - Stable M3 API'leri (renk rolleri, 15 tipografi rolü, köşe ölçeği, temel bileşenler) her zaman kullanılabilir.
@@ -150,6 +152,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - **Emphasized ölçek:** 15 rolün bir kalınlık adımı yüksek varyantları. ✅ Kavramsal olarak M3 Expressive'te mevcut. ⚠️ Compose'daki birebir erişim yolu (ör. `MaterialTheme.typography.emphasized...`) derleme ile teyit edilecek.
 - **Değişken font ekseni `ROND`:** ✅ `M3EVariableFontAxes` üzerinden erişilebilir. ⚠️ Projede kullanılacaksa derleme ile doğrulanacak.
 - **Kural:** `MaterialTheme.typography` dışında sabit `fontSize` veya `fontWeight` yazılmaz.
+- Vurgulu (emphasized) tipografi stilleri, bilgi hiyerarşisini güçlendirmek ve kullanıcının dikkatini önemli eylemlere (ör. 'kaydı başlat') veya bilgilere (ör. okunmamış mesajlar) çekmek için kullanılır.
 
 ### 2.3 Şekil Sistemi (✅ MaterialShapes doğrulandı)
 
@@ -158,8 +161,11 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - **`Morph`:** Şekiller arası geçiş için sınıf mevcut. ⚠️ Bileşen bazlı bağlama kodu (ör. FAB morph) ilgili bileşenin API'sinden teyit edilecek.
 - **Opt-in:** `MaterialShapes` kullanımı `@ExperimentalMaterial3ExpressiveApi` gerektirir. ✅ Doğrulandı. Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
 - **Kural:** `MaterialTheme.shapes` dışında sabit `RoundedCornerShape(dp)` yazılmaz. M3 Expressive şekilleri bu kuralın dışındadır.
+- MaterialShapes ile gelen 35 dekoratif şekil ve yerleşik morph animasyonu, özellikle durum değişikliklerini (ör. bir butonun seçili hale gelmesi) görsel olarak anlaşılır kılmak için kullanılır.
 
 ### 2.4 Hareket Fiziği (✅ MotionScheme / ⚠️ token adları)
+
+Stabil M3'teki sabit süreli animasyonlar yerine, yay tabanlı (spring-based) bir sistem kullanılır. Bu sayede etkileşimler daha canlı, akıcı ve doğal hissettirilir. Konum/boyut/şekil değişimlerinde spatial spring (aşırıya kaçabilir), renk/opaklık değişimlerinde ise effects spring (kritik sönümlemeli) kullanılır.
 
 - **MotionScheme standard:** ✅ (stable M3). **MotionScheme.expressive():** ⚠️ (deneysel hat, opt-in gerektirir).
 - **`defaultSpatialSpec()` ve `defaultEffectsSpec()`:** ✅ Doğrulandı. Spatial spring overshoot'a izin verir; effects spring critically damped'dır.
@@ -215,7 +221,7 @@ fun MyExpressiveTheme(
 
 ## FAZ 3: Bileşen Kuralları
 
-### 3.1 Stable M3 Bileşen Kataloğu (Öncelikli)
+## 3.1 Stable M3 Bileşen Kataloğu (Öncelikli)
 
 Varsayılan olarak önce stable M3 bileşenleri kullanılır. Expressive bileşenler yalnızca stable M3 karşılığı yoksa veya tasarım gereği özellikle istenmişse tercih edilir. Kural: "Önce stable M3, yetmezse Expressive."
 
@@ -255,6 +261,8 @@ Varsayılan olarak önce stable M3 bileşenleri kullanılır. Expressive bileşe
 - DatePicker, DatePickerDialog, DateRangePicker
 
 Kaynak: androidx.compose.material3 API referansı. Bu liste dışındaki bileşenler gerekiyorsa önce stable M3'te karşılığı olup olmadığı kontrol edilir.
+
+Bu bileşenler varsayılan tercihtir. Expressive bileşenler (HorizontalFloatingToolbar, SegmentedListItem, ButtonGroup vb.) yalnızca stable M3 karşılığı yoksa veya tasarım gereği etkileşim kalitesini artırmak amacıyla bilinçli olarak istenmişse kullanılır.
 
 ### 3.2 Tercih Edilen M3 Expressive Bileşenleri
 
