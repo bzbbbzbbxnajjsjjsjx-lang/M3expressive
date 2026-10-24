@@ -20,11 +20,11 @@ minSdk 37 olduğu için alt sürümler için `Build.VERSION.SDK_INT` kontrolü, 
 
 | Katman | Teknoloji / Minimum Sürüm | Kritik Not |
 |--------|---------------------------|------------|
-| Dil | Kotlin **2.2.0+** | Java yasak. Hilt 1.4.0 en az KGP 2.2.0 gerektirir. |
-| UI | Jetpack Compose BOM **2026.08.00** (Compose 1.12 hedefi) | Compose-first. XML ve ViewBinding yasak. Kütüphane sürümlerini BOM yönetir, Compose modüllerine elle sürüm yazma. |
+| Dil | Kotlin **Sürümler libs.versions.toml'da pinlenir; değer Gradle çıktısından alınır.** | Java yasak. |
+| UI | Jetpack Compose BOM **Sürümler libs.versions.toml'da pinlenir; değer Gradle çıktısından alınır.** | Compose-first. XML ve ViewBinding yasak. Kütüphane sürümlerini BOM yönetir, Compose modüllerine elle sürüm yazma. |
 | Tasarım | Material 3 (kararlı baseline); Expressive API'ler için alpha hattı (pinli) | Expressive API'ler kararlı baseline'da yoktur. Sürüm numaraları `libs.versions.toml`'da tutulur. Bkz. 2.0. |
-| Build | **AGP 9.2.0+** | compileSdk 37 ve Compose için gereklidir. |
-| DI | Hilt: Dagger Hilt + **androidx.hilt 1.4.0** | Annotation işleme için **KSP** kullan. KAPT yasak. |
+| Build | **AGP: Sürümler libs.versions.toml'da pinlenir; değer Gradle çıktısından alınır.** | compileSdk 37 ve Compose için gereklidir. |
+| DI | Hilt: Dagger Hilt + **androidx.hilt: Sürümler libs.versions.toml'da pinlenir; değer Gradle çıktısından alınır.** | Annotation işleme için **KSP** kullan. KAPT yasak. |
 | Mimari | MVVM + Clean Architecture | Bkz. 1.4 |
 | Test | Compose **v2 Test API** (`runComposeUiTest`) | v1 API'leri kullanma. Varsayılan coroutine dispatcher: `StandardTestDispatcher`. |
 
@@ -78,9 +78,9 @@ Yeni dosya eklerken bu yapıya uy. Yeni bir üst klasör açmadan önce bu dosya
 
 - **Compose-first.** Activity'ler `ComponentActivity` olur ve `setContent {}` kullanır. Fragment, XML layout ve ViewBinding kullanılmaz.
 - **Tema:** Tüm tema tanımları `presentation/theme/` altındadır. `Theme.kt` tek giriş noktasıdır. Renk, tipografi, şekil ve hareket (`Motion.kt`) değerleri bu dosyalar dışında hardcode edilmez.
-- **Expressive bileşenler:** `ExpressiveFloatingToolbar`, `FlexibleTopAppBar`, `ExpressiveListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenler 1.5.0-alpha hattındadır ve `@ExperimentalMaterial3ExpressiveApi` arkasındadır. Tam adı ve parametreleri derleme ile doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma.
+- **Expressive bileşenler:** `HorizontalFloatingToolbar`, `FlexibleTopAppBar`, `SegmentedListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenler 1.5.0-alpha hattındadır ve `@ExperimentalMaterial3ExpressiveApi` arkasındadır. Tam adı ve parametreleri derleme ile doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma. Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
 - **Hareket (Motion):** Animasyon sabitleri `Motion.kt` içinde tanımlanır.
-- **Wide Color Gamut ve Mesh Gradient** kullanımı yalnızca Compose 1.12 API'sinde doğrulandıktan sonra eklenir.
+- **Wide Color Gamut ve Mesh Gradient** kullanımı yalnızca Compose API'sinde derleme ile doğrulandıktan sonra eklenir.
 
 ### 1.7 Hilt Kuralları
 
@@ -118,6 +118,9 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - Sürümler `gradle/libs.versions.toml` içinde **pinlenir**. Değerler Android Studio'nun "Dependency Updates" önerisinden veya `./gradlew :app:dependencies` çıktısından alınır.
 - `CLAUDE.md` içinde spesifik alpha sürüm numarası **yazılmaz**. Yalnızca iki kural yazılır: kararlı baseline kullanılır, Expressive API'ler opt-in'dir.
 - Sürüm yükseltmesi: önce derle, hata yoksa commit et. Kaynak olarak build çıktısı kullanılır, dokümantasyon değil.
+- Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
+
+> Doğrulama seviyeleri: ✅ = dokümantasyon düzeyinde doğrulandı (derleme teyidi değil); ⚠️ = derleme ile teyit edilecek; 🔨 = derleme ile teyit edildi.
 
 ### 2.1 Renk Sistemi (✅ Doğrulanmış)
 
@@ -139,7 +142,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - **Köşe ölçeği:** `extraSmall` (4dp), `small` (8dp), `medium` (12dp), `large` (16dp), `extraLarge` (28dp), `full` (pill). ✅ Standart M3.
 - **`MaterialShapes`:** `Cookie4Sided`, `Cookie6Sided`, `Cookie9Sided`, `Cookie12Sided`, `ClamShell`, `Flower`, `Clover4Leaf`, `Clover8Leaf` vb. ✅ Mevcut; `RoundedPolygon` döndürür.
 - **`Morph`:** Şekiller arası geçiş için sınıf mevcut. ⚠️ Bileşen bazlı bağlama kodu (ör. FAB morph) ilgili bileşenin API'sinden teyit edilecek.
-- **Opt-in:** `MaterialShapes` kullanımı `@ExperimentalMaterial3ExpressiveApi` gerektirir. ✅ Doğrulandı.
+- **Opt-in:** `MaterialShapes` kullanımı `@ExperimentalMaterial3ExpressiveApi` gerektirir. ✅ Doğrulandı. Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
 - **Kural:** `MaterialTheme.shapes` dışında sabit `RoundedCornerShape(dp)` yazılmaz. M3 Expressive şekilleri bu kuralın dışındadır.
 
 ### 2.4 Hareket Fiziği (✅ MotionScheme / ⚠️ token adları)
@@ -151,7 +154,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 ### 2.5 Tema İskeleti
 
-- **`MaterialExpressiveTheme`:** ✅ Mevcut. Expressive API'ler `@ExperimentalMaterial3ExpressiveApi` opt-in'i gerektirir.
+- **`MaterialExpressiveTheme`:** ⚠️ Mevcut (dokümantasyonda var, derleme ile teyit edilecek). Expressive API'ler `@ExperimentalMaterial3ExpressiveApi` opt-in'i gerektirir.
 - **Opt-in konumu:** Tüm opt-in'ler yalnızca `presentation/theme/ExperimentalOptIns.kt` içinde toplanır.
 - **Parametreler:** `typography`, `shapes` ve `motionScheme` tema içinde tanımlanır.
 - **Dinamik renk:** `minSdk 37` nedeniyle koşulsuz kullanılır.
@@ -187,7 +190,7 @@ fun MyExpressiveTheme(
 | Köşe ölçeği | ✅ | 4/8/12/16/28/pill |
 | `MaterialShapes` ve şekil adları | ✅ | Cookie*, ClamShell, Flower, Clover* |
 | `MotionScheme` (`standard`/`expressive`) | ✅ | `defaultSpatialSpec`/`defaultEffectsSpec` |
-| `MaterialExpressiveTheme` | ✅ | Opt-in gerektirir |
+| `MaterialExpressiveTheme` | ⚠️ (dokümantasyonda var, derleme ile teyit edilecek) | Opt-in gerektirir |
 | Emphasized tipografi erişim yolu | ⚠️ | Derleme ile teyit |
 | `ROND` ekseni kullanımı | ⚠️ | Derleme ile teyit |
 | Morph bileşen bağlama kodu | ⚠️ | Bileşen API'sine göre |
@@ -249,7 +252,7 @@ Jetpack Compose ile [bileşen] oluştur.
 
 - [ ] Hex renk yok
 - [ ] Renkler `MaterialTheme.colorScheme` üzerinden
-- [ ] Şekiller `MaterialTheme.shapes` üzerinden
+- [ ] Şekiller: işlevsel yüzeyler `MaterialTheme.shapes`; dekoratif/seçili durum şekilleri `MaterialShapes`.
 - [ ] Animasyonlar spring tabanlı (linear yok)
 - [ ] Opt-in'ler yalnızca `ExperimentalOptIns.kt` içinde
 - [ ] `@Preview` var
