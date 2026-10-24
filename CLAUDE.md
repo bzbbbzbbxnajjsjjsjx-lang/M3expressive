@@ -219,3 +219,45 @@ Expressive bileşenler `@ExperimentalMaterial3ExpressiveApi` gerektirir. Opt-in'
 
 - API adları ve sürümler `libs.versions.toml` ve derleme çıktısından teyit edilir.
 - `CLAUDE.md`'ye spesifik sürüm numarası yazılmaz.
+
+---
+
+## FAZ 4: Kod Üretim Kuralları
+
+### 4.1 Kod Üretim Kuralları
+
+- Her istekte tek bir Composable veya bileşen üretilir.
+- Composable iş mantığı içermez; yalnızca `UiState` çizer.
+- ViewModel, UseCase çağırır ve `StateFlow<UiState>` üretir.
+- Her Composable için `@Preview` eklenir.
+- Dosya başına en fazla 300 satır.
+- Sabit hex renk, sabit dp ve sabit ms süre yasaktır; token kullanılır.
+
+### 4.2 Standart Prompt Şablonu
+
+```text
+Jetpack Compose ile [bileşen] oluştur.
+- Şekil: [MaterialTheme.shapes token]
+- Renk: [MaterialTheme.colorScheme rolü]
+- Hareket: [MotionScheme spec]
+- Tipografi: [MaterialTheme.typography rolü]
+- Opt-in: gerekliyse ExperimentalOptIns.kt
+- Yapma: [varsa yasaklar]
+```
+
+### 4.3 Kontrol Listesi (Her Kod Üretiminden Sonra)
+
+- [ ] Hex renk yok
+- [ ] Renkler `MaterialTheme.colorScheme` üzerinden
+- [ ] Şekiller `MaterialTheme.shapes` üzerinden
+- [ ] Animasyonlar spring tabanlı (linear yok)
+- [ ] Opt-in'ler yalnızca `ExperimentalOptIns.kt` içinde
+- [ ] `@Preview` var
+- [ ] Dosya 300 satırın altında
+- [ ] Composable içinde iş mantığı yok
+
+### 4.4 Sürüm ve API Doğrulama
+
+- `CLAUDE.md`'ye spesifik sürüm numarası yazılmaz.
+- API adları ve sürümler `libs.versions.toml` ve derleme çıktısından teyit edilir.
+- Doğrulanamayan API adı kullanılmaz; ⚠️ ile işaretlenir.
