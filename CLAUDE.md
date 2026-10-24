@@ -6,6 +6,14 @@ Bu dosya, bu repodaki her değişiklikten önce okunmalıdır. Aşağıdaki sür
 
 ## FAZ 1: Temel ve Mimari
 
+## 1.0 Tasarım İlkesi (Değişmez)
+
+- Material 3, projenin **temelidir**. Expressive, M3'ün yerine geçmez; onun üzerine binen bir katmandır.
+- Ayrı bir "material3-expressive" paketi **yoktur**. Tüm Expressive özellikleri `androidx.compose.material3:material3` içinde gelir.
+- Stable M3 API'leri (renk rolleri, 15 tipografi rolü, köşe ölçeği, temel bileşenler) her zaman kullanılabilir.
+- Expressive API'leri (`MaterialExpressiveTheme`, `MotionScheme.expressive()`, `MaterialShapes`, `HorizontalFloatingToolbar`, `SegmentedListItem` vb.) opt-in gerektirir ve deneysel hattadır.
+- Kural: Bir ekran önce stable M3 ile kurulur; Expressive katmanı (şekil morphing, yay fiziği, vurgulu tipografi) üzerine eklenir. Ters sıra yasaktır.
+
 ### 1.1 Proje Kimliği
 
 - **Proje adı:** MyExpressiveApp (yer tutucu)
@@ -154,7 +162,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 ### 2.5 Tema İskeleti
 
-- **`MaterialExpressiveTheme`:** ⚠️ Mevcut (dokümantasyonda var, derleme ile teyit edilecek). Expressive API'ler `@ExperimentalMaterial3ExpressiveApi` opt-in'i gerektirir.
+- **`MaterialExpressiveTheme`:** ⚠️ Mevcut (deneysel hatta; derleme ile teyit edilecek). Expressive API'ler `@ExperimentalMaterial3ExpressiveApi` opt-in'i gerektirir.
 - **Opt-in konumu:** Tüm opt-in'ler yalnızca `presentation/theme/ExperimentalOptIns.kt` içinde toplanır.
 - **Parametreler:** `typography`, `shapes` ve `motionScheme` tema içinde tanımlanır.
 - **Dinamik renk:** `minSdk 37` nedeniyle koşulsuz kullanılır.
@@ -190,7 +198,7 @@ fun MyExpressiveTheme(
 | Köşe ölçeği | ✅ | 4/8/12/16/28/pill |
 | `MaterialShapes` ve şekil adları | ✅ | Cookie*, ClamShell, Flower, Clover* |
 | `MotionScheme` (`standard`/`expressive`) | ✅ | `defaultSpatialSpec`/`defaultEffectsSpec` |
-| `MaterialExpressiveTheme` | ⚠️ (dokümantasyonda var, derleme ile teyit edilecek) | Opt-in gerektirir |
+| `MaterialExpressiveTheme` | ⚠️ (deneysel hatta; derleme ile teyit edilecek) | Opt-in gerektirir |
 | Emphasized tipografi erişim yolu | ⚠️ | Derleme ile teyit |
 | `ROND` ekseni kullanımı | ⚠️ | Derleme ile teyit |
 | Morph bileşen bağlama kodu | ⚠️ | Bileşen API'sine göre |
@@ -252,7 +260,7 @@ Jetpack Compose ile [bileşen] oluştur.
 
 - [ ] Hex renk yok
 - [ ] Renkler `MaterialTheme.colorScheme` üzerinden
-- [ ] Şekiller: işlevsel yüzeyler `MaterialTheme.shapes`; dekoratif/seçili durum şekilleri `MaterialShapes`.
+- [ ] Şekiller: işlevsel yüzeyler `MaterialTheme.shapes`; dekoratif/seçili durum şekilleri `MaterialShapes` (Expressive katmanı).
 - [ ] Animasyonlar spring tabanlı (linear yok)
 - [ ] Opt-in'ler yalnızca `ExperimentalOptIns.kt` içinde
 - [ ] `@Preview` var
