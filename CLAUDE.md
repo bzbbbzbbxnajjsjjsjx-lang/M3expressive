@@ -22,7 +22,7 @@ minSdk 37 olduğu için alt sürümler için `Build.VERSION.SDK_INT` kontrolü, 
 |--------|---------------------------|------------|
 | Dil | Kotlin **2.2.0+** | Java yasak. Hilt 1.4.0 en az KGP 2.2.0 gerektirir. |
 | UI | Jetpack Compose BOM **2026.08.00** (Compose 1.12 hedefi) | Compose-first. XML ve ViewBinding yasak. Kütüphane sürümlerini BOM yönetir, Compose modüllerine elle sürüm yazma. |
-| Tasarım | Material 3 **1.5.0** (Expressive API'leri) | Expressive bileşenleri kullanmadan önce M3 1.5.0 API yüzeyinde adlarını ve imzalarını doğrula. |
+| Tasarım | Material 3 **1.4.0** (kararlı baseline); Expressive için **1.5.0-alpha** (pinli, ör. `1.5.0-alpha26`) | Expressive API'ler 1.4.0'da yoktur, 1.5.0 kararlı değildir. Compose BOM'un material3 sürümünü kapsadığı doğrulanmadığı için material3 sürümü ayrıca pinlenir. Bkz. 2.0. |
 | Build | **AGP 9.2.0+** | compileSdk 37 ve Compose için gereklidir. |
 | DI | Hilt: Dagger Hilt + **androidx.hilt 1.4.0** | Annotation işleme için **KSP** kullan. KAPT yasak. |
 | Mimari | MVVM + Clean Architecture | Bkz. 1.4 |
@@ -78,7 +78,7 @@ Yeni dosya eklerken bu yapıya uy. Yeni bir üst klasör açmadan önce bu dosya
 
 - **Compose-first.** Activity'ler `ComponentActivity` olur ve `setContent {}` kullanır. Fragment, XML layout ve ViewBinding kullanılmaz.
 - **Tema:** Tüm tema tanımları `presentation/theme/` altındadır. `Theme.kt` tek giriş noktasıdır. Renk, tipografi, şekil ve hareket (`Motion.kt`) değerleri bu dosyalar dışında hardcode edilmez.
-- **Expressive bileşenler:** `ExpressiveFloatingToolbar`, `FlexibleTopAppBar`, `ExpressiveListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenlerin tam adı ve parametreleri M3 1.5.0'da doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma.
+- **Expressive bileşenler:** `ExpressiveFloatingToolbar`, `FlexibleTopAppBar`, `ExpressiveListItem`, `ButtonGroup`, `M3LoadingIndicator`. Bu bileşenler 1.5.0-alpha hattındadır ve `@ExperimentalMaterial3ExpressiveApi` arkasındadır. Tam adı ve parametreleri derleme ile doğrulanmadan kullanılmaz. Tahmin yoluyla import yazma.
 - **Hareket (Motion):** Animasyon sabitleri `Motion.kt` içinde tanımlanır.
 - **Wide Color Gamut ve Mesh Gradient** kullanımı yalnızca Compose 1.12 API'sinde doğrulandıktan sonra eklenir.
 
@@ -115,6 +115,14 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 > **Doğrulama notu:** Bu fazda "✅ Doğrulandı" etiketli öğeler standart M3 değerleri veya arama ile teyit edilmiş API adlarıdır. "⚠️ Doğrulanmadı" etiketli öğeler M3 1.5.0 API'sinde derlenerek kontrol edilmeden kullanılmaz. Bu öğeler için tahmin yoluyla kod yazma.
 
+### 2.0 Sürüm ve Deneysel API Politikası
+
+- Kararlı `material3` baseline: **1.4.0**. Expressive API'ler 1.5.0-alpha hattındadır.
+- Tüm `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` kullanımları **yalnızca** `presentation/theme/ExperimentalOptIns.kt` dosyasında toplanır. Kararlı ve deneysel API'ler aynı dosyada karıştırılmaz.
+- Alpha sürümler `gradle/libs.versions.toml` içinde pinlenir (ör. `material3 = "1.5.0-alpha26"`). `latest.release` kullanılmaz.
+- Sürüm yükseltmesinde önce `./gradlew :app:compileDebugKotlin` ile derleme doğrulanır.
+- Expressive API'lerin kararlılaşması 2026 sonu için beklenmektedir (doğrulanmadı). Kararlılaştığında opt-in'ler kaldırılır ve bu bölüm güncellenir.
+
 ### 2.1 Renk Sistemi (Color Tokens)
 
 - ✅ **Dinamik renk:** `minSdk 37` olduğu için dinamik renk her zaman kullanılabilir. Statik palet fallback'i yazma. `dynamicLightColorScheme(context)` ve `dynamicDarkColorScheme(context)` kullan.
@@ -127,7 +135,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 
 - ✅ **Baseline ölçek:** 15 standart M3 rolü: `display{Large,Medium,Small}`, `headline{Large,Medium,Small}`, `title{Large,Medium,Small}`, `body{Large,Medium,Small}`, `label{Large,Medium,Small}`.
 - ⚠️ **Emphasized varyantlar:** Compose M3 API'sinde doğrulanmadı. Doğrulanana kadar emphasized stil tanımlama ve kullanma. Yalnızca baseline roller kullanılır.
-- ⚠️ **Roboto Flex:** Android'in Roboto Flex'e geçiş rehberi mevcut. Ancak Compose'da değişken font ekseni ayarı (`FontVariation`) ve `opsz` ekseninin kullanımı API'de doğrulanmalı. **`ROND` ekseni doğrulanmadı; kullanma.**
+- ⚠️ **Roboto Flex:** Android'in Roboto Flex'e geçiş rehberi mevcut. Ancak Compose'da değişken font ekseni ayarı (`FontVariation`) ve `opsz` ekseninin kullanımı API'de doğrulanmalı. `ROND` ekseni güncellemeye göre `M3EVariableFontAxes.rond` (0–100) olarak vardır; bu oturumda bağımsız doğrulanmadı, kullanmadan önce derleme ile teyit et.
 - **Kural:** `MaterialTheme.typography` dışında sabit `fontSize`, `fontWeight` veya `fontFamily` yazma.
 
 ### 2.3 Şekil Sistemi (Shape System)
@@ -136,12 +144,12 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - ✅ **Expressive şekiller:** `MaterialShapes` (`RoundedPolygon` tabanlı). Doğrulanan adlar: `Flower`, `ClamShell`, `Cookie4Sided`–`Cookie12Sided`, `Clover4Leaf`, `Clover8Leaf`. Bu API `@ExperimentalMaterial3ExpressiveApi` ile işaretlidir.
 - ⚠️ **Şekil sayısı:** "35 şekil" bilgisi Compose için doğrulanmadı. Bu sayıya dayanma; `MaterialShapes` içindeki gerçek adları kullan.
 - ⚠️ **Morphing:** Compose'da morph kullanım kodu doğrulanmadı. İlk uygulamadan önce resmi Android geliştirici rehberine bak.
-- **Opt-in:** `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` yalnızca şekil kullanılan dosyalarda, mümkün olduğunca tek noktada yazılır.
+- **Opt-in:** `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` yalnızca `ExperimentalOptIns.kt` içinde toplanır (bkz. 2.0).
 - **Kural:** `MaterialTheme.shapes` dışında `RoundedCornerShape(dp)` yazma.
 
 ### 2.4 Hareket Sistemi (Motion)
 
-- ⚠️ **Motion scheme:** `MotionScheme` API'si (`expressive()` / `standard()`), spatial ve effects spring tanımları ve "12 spring token" iddiası doğrulanmadı. Bu yapıyı kodda kullanmadan önce M3 1.5.0 API'sini kontrol et.
+- ⚠️ **Motion scheme:** `MotionScheme` (`expressive()` / `standard()`) ve `defaultSpatialSpec()` / `defaultEffectsSpec()` metotları güncellemeye göre vardır. Birebir spring token adları ("12 token") sürüme göre değişebilir; kullanmadan önce alpha sürümde derleme ile kontrol et.
 - **Kavramsal kural (doğrulanmış tasarım ilkesi):** Konum, boyut ve şekil değişimleri için **spatial** spring; renk ve opaklık için **effects** spring kullanılır.
 - **Linear animasyon yasaktır.** Konum, boyut veya renk geçişlerinde `tween` ile doğrusal easing kullanma.
 - ⚠️ **Emphasized easing:** Doğrulanmadı; kullanma.
@@ -151,7 +159,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 ### 2.5 Tema İskeleti (`Theme.kt`)
 
 - `presentation/theme/Theme.kt` tek giriş noktasıdır.
-- ⚠️ **`MaterialExpressiveTheme`:** Expressive motion ve shape için bu bileşen gerekli olabilir, ama adı ve parametreleri M3 1.5.0'da doğrulanmadı. Doğrulanana kadar `MaterialTheme` kullan ve motion scheme bağlama adımını ayrı bir TODO olarak bırak. Bu durumu kullanıcıya bildir.
+- ⚠️ **`MaterialExpressiveTheme`:** Güncellemeye göre 1.5.0-alpha hattında ve opt-in arkasındadır. Alpha sürüm pinlenip derleme doğrulanana kadar `MaterialTheme` kullanılır; motion scheme bağlama adımı ayrı bir TODO olarak bırakılır.
 - **Parametreler:** `darkTheme: Boolean = isSystemInDarkTheme()`, `colorScheme` (dinamik), `typography`, `shapes`, ve doğrulanırsa `motionScheme`.
 - **Dinamik renk:** `minSdk 37` olduğundan koşul yazma. Dinamik şema her zaman seçilir.
 
@@ -184,15 +192,16 @@ fun MyExpressiveTheme(
 | Dinamik renk (`dynamicLight/DarkColorScheme`) | ✅ Standart M3 |
 | Renk rolleri ve `surfaceContainer*` | ✅ Standart M3 |
 | 15 baseline tipografi rolü | ✅ Standart M3 |
-| Emphasized tipografi | ⚠️ Doğrulanmadı |
-| Roboto Flex `opsz` / `ROND` | ⚠️ `ROND` doğrulanmadı |
+| Emphasized tipografi | ⚠️ Güncellemeye göre var; bağımsız doğrulanmadı |
+| Roboto Flex `opsz` / `ROND` | ⚠️ `ROND` güncellemeye göre var; bağımsız doğrulanmadı |
 | Köşe ölçeği 4/8/12/16/28dp | ✅ Standart M3 |
 | `MaterialShapes` (Flower, ClamShell, Cookie, Clover) | ✅ Compose API'sinde var |
 | "35 şekil" sayısı | ⚠️ Compose için doğrulanmadı |
 | Morph kullanım kodu | ⚠️ Doğrulanmadı |
-| `MotionScheme` ve 12 spring token | ⚠️ Doğrulanmadı |
+| `MotionScheme` (`defaultSpatialSpec`, `defaultEffectsSpec`) | ✅ Güncellemeye göre var |
+| 12 spring token'ın birebir adları | ⚠️ Sürüme göre değişebilir |
 | Emphasized easing | ⚠️ Doğrulanmadı |
-| `MaterialExpressiveTheme` | ⚠️ Doğrulanmadı |
+| `MaterialExpressiveTheme` | ⚠️ 1.5.0-alpha, opt-in; derleme ile teyit et |
 
 ### 2.7 Faz 2 Kabul Kriterleri
 
