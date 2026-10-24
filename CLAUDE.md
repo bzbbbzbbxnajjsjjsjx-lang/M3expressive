@@ -152,7 +152,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - **Emphasized ölçek:** 15 rolün bir kalınlık adımı yüksek varyantları. ✅ Kavramsal olarak M3 Expressive'te mevcut. ⚠️ Compose'daki birebir erişim yolu (ör. `MaterialTheme.typography.emphasized...`) derleme ile teyit edilecek.
 - **Değişken font ekseni `ROND`:** ✅ `M3EVariableFontAxes` üzerinden erişilebilir. ⚠️ Projede kullanılacaksa derleme ile doğrulanacak.
 - **Kural:** `MaterialTheme.typography` dışında sabit `fontSize` veya `fontWeight` yazılmaz.
-- Vurgulu (emphasized) tipografi stilleri, bilgi hiyerarşisini güçlendirmek ve kullanıcının dikkatini önemli eylemlere (ör. 'kaydı başlat') veya bilgilere (ör. okunmamış mesajlar) çekmek için kullanılır.
+- Vurgulu (emphasized) tipografi stilleri, bilgi hiyerarşisini güçlendirmek ve kullanıcının dikkatini önemli eylemlere (ör. 'kaydı başlat') veya bilgilere (ör. okunmamış mesajlar) çekmek için kullanılır. (API erişim yolu —ör. `MaterialTheme.typography.displayLargeEmphasized`— derleme ile teyit edilecek.)
 
 ### 2.3 Şekil Sistemi (✅ MaterialShapes doğrulandı)
 
