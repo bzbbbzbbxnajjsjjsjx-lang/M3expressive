@@ -108,3 +108,95 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - [ ] `domain/` paketinde Android veya Compose import'u yoktur.
 - [ ] `minSdk`, `targetSdk` ve `compileSdk` değerleri 37'dir.
 - [ ] Repoda XML layout, ViewBinding, KAPT veya Java kaynak dosyası yoktur.
+
+---
+
+## FAZ 2: Tasarım Sistemi (Renk, Tipografi, Şekil, Hareket)
+
+> **Doğrulama notu:** Bu fazda "✅ Doğrulandı" etiketli öğeler standart M3 değerleri veya arama ile teyit edilmiş API adlarıdır. "⚠️ Doğrulanmadı" etiketli öğeler M3 1.5.0 API'sinde derlenerek kontrol edilmeden kullanılmaz. Bu öğeler için tahmin yoluyla kod yazma.
+
+### 2.1 Renk Sistemi (Color Tokens)
+
+- ✅ **Dinamik renk:** `minSdk 37` olduğu için dinamik renk her zaman kullanılabilir. Statik palet fallback'i yazma. `dynamicLightColorScheme(context)` ve `dynamicDarkColorScheme(context)` kullan.
+- ✅ **Tonal paletler:** `primary`, `secondary`, `tertiary`, `neutral`, `neutral-variant`, `error`. Her biri 0–100 ton adımına sahiptir.
+- **Hex yasağı:** Kodda hex renk literal'i (`Color(0xFF...)`) yalnızca `presentation/theme/Color.kt` içinde bulunabilir. Diğer her yerde renk yalnızca `MaterialTheme.colorScheme` rolleri üzerinden kullanılır.
+- ✅ **Zorunlu renk rolleri:** `primary`, `onPrimary`, `primaryContainer`, `onPrimaryContainer`, `secondary`, `tertiary`, `surface`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`, `surfaceContainerHighest`, `outline`, `error`. Bunlar standart M3 `ColorScheme` rolleridir; derleme ile teyit et.
+- **Yükseklik:** Derinlik için önce `surfaceContainer*` seviyeleri kullanılır. `Surface(tonalElevation = ...)` yalnızca bu seviyeler yetmediğinde kullanılır.
+
+### 2.2 Tipografi (Typography)
+
+- ✅ **Baseline ölçek:** 15 standart M3 rolü: `display{Large,Medium,Small}`, `headline{Large,Medium,Small}`, `title{Large,Medium,Small}`, `body{Large,Medium,Small}`, `label{Large,Medium,Small}`.
+- ⚠️ **Emphasized varyantlar:** Compose M3 API'sinde doğrulanmadı. Doğrulanana kadar emphasized stil tanımlama ve kullanma. Yalnızca baseline roller kullanılır.
+- ⚠️ **Roboto Flex:** Android'in Roboto Flex'e geçiş rehberi mevcut. Ancak Compose'da değişken font ekseni ayarı (`FontVariation`) ve `opsz` ekseninin kullanımı API'de doğrulanmalı. **`ROND` ekseni doğrulanmadı; kullanma.**
+- **Kural:** `MaterialTheme.typography` dışında sabit `fontSize`, `fontWeight` veya `fontFamily` yazma.
+
+### 2.3 Şekil Sistemi (Shape System)
+
+- ✅ **Köşe ölçeği:** `extraSmall` 4dp, `small` 8dp, `medium` 12dp, `large` 16dp, `extraLarge` 28dp. `full` tam yuvarlak (pill/circle) şekildir. Bunlar standart M3 değerleridir.
+- ✅ **Expressive şekiller:** `MaterialShapes` (`RoundedPolygon` tabanlı). Doğrulanan adlar: `Flower`, `ClamShell`, `Cookie4Sided`–`Cookie12Sided`, `Clover4Leaf`, `Clover8Leaf`. Bu API `@ExperimentalMaterial3ExpressiveApi` ile işaretlidir.
+- ⚠️ **Şekil sayısı:** "35 şekil" bilgisi Compose için doğrulanmadı. Bu sayıya dayanma; `MaterialShapes` içindeki gerçek adları kullan.
+- ⚠️ **Morphing:** Compose'da morph kullanım kodu doğrulanmadı. İlk uygulamadan önce resmi Android geliştirici rehberine bak.
+- **Opt-in:** `@OptIn(ExperimentalMaterial3ExpressiveApi::class)` yalnızca şekil kullanılan dosyalarda, mümkün olduğunca tek noktada yazılır.
+- **Kural:** `MaterialTheme.shapes` dışında `RoundedCornerShape(dp)` yazma.
+
+### 2.4 Hareket Sistemi (Motion)
+
+- ⚠️ **Motion scheme:** `MotionScheme` API'si (`expressive()` / `standard()`), spatial ve effects spring tanımları ve "12 spring token" iddiası doğrulanmadı. Bu yapıyı kodda kullanmadan önce M3 1.5.0 API'sini kontrol et.
+- **Kavramsal kural (doğrulanmış tasarım ilkesi):** Konum, boyut ve şekil değişimleri için **spatial** spring; renk ve opaklık için **effects** spring kullanılır.
+- **Linear animasyon yasaktır.** Konum, boyut veya renk geçişlerinde `tween` ile doğrusal easing kullanma.
+- ⚠️ **Emphasized easing:** Doğrulanmadı; kullanma.
+- **Hız kademeleri:** `fast`, `default`, `slow`. Sürelerin ve spring değerlerinin kaynağı `Motion.kt` olur.
+- **Erişilebilirlik:** Hareket azaltma (reduce motion) davranışı Faz 3'te ele alınır.
+
+### 2.5 Tema İskeleti (`Theme.kt`)
+
+- `presentation/theme/Theme.kt` tek giriş noktasıdır.
+- ⚠️ **`MaterialExpressiveTheme`:** Expressive motion ve shape için bu bileşen gerekli olabilir, ama adı ve parametreleri M3 1.5.0'da doğrulanmadı. Doğrulanana kadar `MaterialTheme` kullan ve motion scheme bağlama adımını ayrı bir TODO olarak bırak. Bu durumu kullanıcıya bildir.
+- **Parametreler:** `darkTheme: Boolean = isSystemInDarkTheme()`, `colorScheme` (dinamik), `typography`, `shapes`, ve doğrulanırsa `motionScheme`.
+- **Dinamik renk:** `minSdk 37` olduğundan koşul yazma. Dinamik şema her zaman seçilir.
+
+```kotlin
+// Örnek iskelet: API adları M3 1.5.0'da derleme ile doğrulanmalıdır.
+@Composable
+fun MyExpressiveTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val context = LocalContext.current
+    val colorScheme = if (darkTheme) {
+        dynamicDarkColorScheme(context)
+    } else {
+        dynamicLightColorScheme(context)
+    }
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = AppTypography,
+        shapes = AppShapes,
+        content = content,
+    )
+}
+```
+
+### 2.6 Doğrulama Durumu Özeti
+
+| Öğe | Durum |
+|-----|-------|
+| Dinamik renk (`dynamicLight/DarkColorScheme`) | ✅ Standart M3 |
+| Renk rolleri ve `surfaceContainer*` | ✅ Standart M3 |
+| 15 baseline tipografi rolü | ✅ Standart M3 |
+| Emphasized tipografi | ⚠️ Doğrulanmadı |
+| Roboto Flex `opsz` / `ROND` | ⚠️ `ROND` doğrulanmadı |
+| Köşe ölçeği 4/8/12/16/28dp | ✅ Standart M3 |
+| `MaterialShapes` (Flower, ClamShell, Cookie, Clover) | ✅ Compose API'sinde var |
+| "35 şekil" sayısı | ⚠️ Compose için doğrulanmadı |
+| Morph kullanım kodu | ⚠️ Doğrulanmadı |
+| `MotionScheme` ve 12 spring token | ⚠️ Doğrulanmadı |
+| Emphasized easing | ⚠️ Doğrulanmadı |
+| `MaterialExpressiveTheme` | ⚠️ Doğrulanmadı |
+
+### 2.7 Faz 2 Kabul Kriterleri
+
+- [ ] Hex literal yalnızca `Color.kt` içinde bulunur.
+- [ ] Tipografi, şekil ve renk yalnızca `MaterialTheme` üzerinden okunur.
+- [ ] Doğrulanmamış tüm API'ler (tabloda ⚠️) derleme ile teyit edilmiş ya da kullanılmamıştır.
+- [ ] `Theme.kt` tek giriş noktasıdır ve Preview ile hem açık hem koyu temada render olur.
