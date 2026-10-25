@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">MyExpressiveApp</string>
     <string name="home_title">Ana Ekran</string>
+    <string name="action_add">Ekle</string>
+    <string name="action_search">Ara</string>
+    <string name="action_filter">Filtrele</string>
 </resources>
