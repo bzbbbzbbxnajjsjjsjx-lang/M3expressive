@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -25,7 +26,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findStartDestination
 import androidx.navigation.navArgument
 import com.example.myexpressiveapp.R
 import com.example.myexpressiveapp.presentation.add.AddTaskScreen
@@ -65,7 +65,7 @@ fun AppNavHost() {
                 NavigationBar {
                     TopLevelDestination.entries.forEach { destination ->
                         NavigationBarItem(
-                            selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true,
+                            selected = currentDestination?.route == destination.route,
                             onClick = { navController.navigateToTopLevel(destination.route) },
                             icon = { Text(text = destination.glyph) },
                             label = { Text(text = stringResource(destination.labelRes)) },
@@ -132,7 +132,7 @@ fun AppNavHost() {
 
 private fun NavHostController.navigateToTopLevel(route: String) {
     navigate(route) {
-        popUpTo(graph.findStartDestination().id) { saveState = true }
+        popUpTo(graph.startDestinationId) { saveState = true }
         launchSingleTop = true
         restoreState = true
     }
