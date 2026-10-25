@@ -30,6 +30,11 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "0.1.0"
+
+        // Modern telefonları hedefler; native kütüphaneler yalnızca arm64 için paketlenir.
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
     }
 
     buildTypes {
