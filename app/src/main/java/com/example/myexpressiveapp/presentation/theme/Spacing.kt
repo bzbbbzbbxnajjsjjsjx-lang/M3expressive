@@ -8,5 +8,4 @@ object AppSpacing {
     val large = 24.dp
     val toolbarClearance = 96.dp
     val avatarSize = 40.dp
-    val navigationBarHeight = 64.dp
 }

@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +34,6 @@ import com.example.myexpressiveapp.presentation.notes.detail.NoteDetailScreen
 import com.example.myexpressiveapp.presentation.notes.edit.NoteEditScreen
 import com.example.myexpressiveapp.presentation.notes.list.NotesListScreen
 import com.example.myexpressiveapp.presentation.settings.SettingsScreen
-import com.example.myexpressiveapp.presentation.theme.AppSpacing
 
 private const val NOTES_LIST_ROUTE = "notes_list"
 private const val NOTES_SEARCH_ROUTE = "notes_search"
@@ -65,9 +63,8 @@ fun AppNavHost() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar(
-                    modifier = Modifier.height(AppSpacing.navigationBarHeight),
-                ) {
+                // Yükseklik, M3'ün resmi konteyner değeridir (64dp); elle verilmez.
+                NavigationBar {
                     TopLevelDestination.entries.forEach { destination ->
                         NavigationBarItem(
                             selected = currentRoute == destination.route,
