@@ -5,4 +5,56 @@
     <string name="action_add">Ekle</string>
     <string name="action_search">Ara</string>
     <string name="action_filter">Filtrele</string>
+    <string name="search_label">Başlık ara</string>
+    <string name="filter_all">Tüm kategoriler</string>
+    <string name="filter_category">Kategori: %1$s</string>
+    <string name="no_results">Sonuç bulunamadı</string>
+    <string-array name="home_item_titles">
+        <item>Sabah toplantısı</item>
+        <item>Proje teslimi</item>
+        <item>Kod inceleme</item>
+        <item>Tasarım taslağı</item>
+        <item>Haftalık planlama</item>
+        <item>Market alışverişi</item>
+        <item>Kitap okuma</item>
+        <item>Arkadaş buluşması</item>
+        <item>Koşu</item>
+        <item>Su hatırlatıcısı</item>
+        <item>Uyku düzeni</item>
+        <item>Uçuş kontrolü</item>
+        <item>Bagaj listesi</item>
+        <item>Otel rezervasyonu</item>
+    </string-array>
+    <string-array name="home_item_subtitles">
+        <item>Ekip senkronizasyonu, 15 dakika</item>
+        <item>Raporun son gözden geçirmesi</item>
+        <item>İki açık pull request var</item>
+        <item>Ana ekran için yeni düzen</item>
+        <item>Gelecek haftanın öncelikleri</item>
+        <item>Süt, yumurta, ekmek</item>
+        <item>Bölüm 4, 20 sayfa</item>
+        <item>Cumartesi akşamı, 20:00</item>
+        <item>5 km, hafif tempo</item>
+        <item>Günlük hedef: 2 litre</item>
+        <item>Yatma saati 23:30</item>
+        <item>Check-in 24 saat önce açılır</item>
+        <item>Şarj aletleri ve ilaçlar</item>
+        <item>Onay e-postası bekleniyor</item>
+    </string-array>
+    <string-array name="home_item_categories">
+        <item>Çalışma</item>
+        <item>Çalışma</item>
+        <item>Çalışma</item>
+        <item>Çalışma</item>
+        <item>Çalışma</item>
+        <item>Kişisel</item>
+        <item>Kişisel</item>
+        <item>Kişisel</item>
+        <item>Sağlık</item>
+        <item>Sağlık</item>
+        <item>Sağlık</item>
+        <item>Seyahat</item>
+        <item>Seyahat</item>
+        <item>Seyahat</item>
+    </string-array>
 </resources>

@@ -134,7 +134,7 @@ Faz 1, aşağıdaki maddelerin tamamı sağlandığında tamamlanmış sayılır
 - Sürümler `gradle/libs.versions.toml` içinde **pinlenir**. Değerler Android Studio'nun "Dependency Updates" önerisinden veya `./gradlew :app:dependencies` çıktısından alınır.
 - `CLAUDE.md` içinde spesifik alpha sürüm numarası **yazılmaz**. Yalnızca iki kural yazılır: kararlı baseline kullanılır, Expressive API'ler opt-in'dir.
 - Sürüm yükseltmesi: önce derle, hata yoksa commit et. Kaynak olarak build çıktısı kullanılır, dokümantasyon değil.
-- Opt-in'ler yalnızca presentation/theme/ExperimentalOptIns.kt içinde toplanır.
+- Opt-in'ler dosya başına `@file:OptIn` olarak yazılır; `ExperimentalOptIns.kt` bunların listesini tutan bir belgedir.
 
 > Doğrulama seviyeleri: ✅ = dokümantasyon düzeyinde doğrulandı (derleme teyidi değil); ⚠️ = derleme ile teyit edilecek; 🔨 = derleme ile teyit edildi.
 
