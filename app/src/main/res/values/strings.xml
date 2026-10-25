@@ -75,4 +75,8 @@
         <item>Kişisel</item>
     </string-array>
     <string name="error_generic">Bir hata oluştu</string>
+    <string name="note_count">%1$d not</string>
+    <string name="action_new_note">Yeni not</string>
+    <string name="note_empty_title">Henüz not yok</string>
+    <string name="note_empty_body">İlk notunu eklemek için Yeni not düğmesine dokun.</string>
 </resources>

@@ -3,19 +3,24 @@
 package com.example.myexpressiveapp.presentation.notes.list
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
@@ -41,8 +46,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.graphics.shapes.Morph
@@ -108,7 +115,19 @@ private fun NotesListContent(
                         }
                     }
                 },
-                title = { Text(text = stringResource(R.string.home_title)) },
+                title = {
+                    Column {
+                        Text(text = stringResource(R.string.home_title))
+                        Text(
+                            text = stringResource(
+                                R.string.note_count,
+                                (uiState as? NotesListUiState.Success)?.notes?.size ?: 0,
+                            ),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                },
                 actions = {
                     if (uiState is NotesListUiState.Success) {
                         FilledTonalButton(
@@ -162,11 +181,7 @@ private fun NotesListContent(
                         )
                     }
                     if (uiState.notes.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.no_results),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(AppSpacing.medium),
-                        )
+                        EmptyNotes(hasQuery = uiState.query.isNotBlank(), modifier = Modifier.weight(1f))
                     } else {
                         NotesGrid(
                             notes = uiState.notes,
@@ -254,20 +269,72 @@ private fun NotesGrid(
         verticalItemSpacing = AppSpacing.small,
         horizontalArrangement = Arrangement.spacedBy(AppSpacing.small),
     ) {
-        items(notes, key = Note::id) { note ->
-            NoteCard(note = note, onClick = { onNoteClick(note.id) })
+        itemsIndexed(notes, key = { _, note -> note.id }) { index, note ->
+            NoteCard(
+                note = note,
+                colors = noteCardColors(tone = index % TONE_COUNT),
+                onClick = { onNoteClick(note.id) },
+            )
         }
     }
 }
 
 @Composable
-private fun NoteCard(note: Note, onClick: () -> Unit) {
+private fun EmptyNotes(hasQuery: Boolean, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(AppSpacing.medium),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        val cookie = remember { MorphShape(Morph(MaterialShapes.Cookie9Sided, MaterialShapes.Cookie4Sided), 0f) }
+        Box(
+            modifier = Modifier
+                .size(AppSpacing.emptyStateSize)
+                .clip(cookie)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.create_text_glyph),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+        }
+        Spacer(modifier = Modifier.height(AppSpacing.medium))
+        Text(
+            text = stringResource(if (hasQuery) R.string.no_results else R.string.note_empty_title),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        if (!hasQuery) {
+            Text(
+                text = stringResource(R.string.note_empty_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun noteCardColors(tone: Int): CardColors {
+    val scheme = MaterialTheme.colorScheme
+    val (container, content) = when (tone) {
+        1 -> scheme.primaryContainer to scheme.onPrimaryContainer
+        2 -> scheme.secondaryContainer to scheme.onSecondaryContainer
+        3 -> scheme.tertiaryContainer to scheme.onTertiaryContainer
+        4 -> scheme.errorContainer to scheme.onErrorContainer
+        else -> scheme.surfaceContainerHighest to scheme.onSurface
+    }
+    return CardDefaults.cardColors(containerColor = container, contentColor = content)
+}
+
+@Composable
+private fun NoteCard(note: Note, colors: CardColors, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        ),
+        colors = colors,
     ) {
         Column(
             modifier = Modifier.padding(AppSpacing.medium),
@@ -288,12 +355,10 @@ private fun NoteCard(note: Note, onClick: () -> Unit) {
             Text(
                 text = note.category,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = formatDate(note.timestamp),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -315,7 +380,7 @@ private fun CreateMenu(onCreateClick: () -> Unit, modifier: Modifier = Modifier)
         modifier = modifier,
         button = {
             FloatingActionButton(onClick = { expanded = !expanded }, shape = fabShape) {
-                Text(text = stringResource(R.string.action_add))
+                Text(text = stringResource(R.string.action_new_note))
             }
         },
     ) {
@@ -334,6 +399,7 @@ private fun formatDate(timestamp: Long): String =
     DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(timestamp))
 
 private const val GRID_COLUMNS = 2
+private const val TONE_COUNT = 5
 private const val TITLE_MAX_LINES = 2
 private const val SUMMARY_MAX_LINES = 4
 
