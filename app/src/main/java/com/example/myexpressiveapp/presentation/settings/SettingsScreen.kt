@@ -1,4 +1,4 @@
-package com.example.myexpressiveapp.presentation.profile
+package com.example.myexpressiveapp.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,30 +31,30 @@ import com.example.myexpressiveapp.presentation.theme.AppSpacing
 import com.example.myexpressiveapp.presentation.theme.MyExpressiveTheme
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
+fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    ProfileContent(uiState = uiState, onThemeSelected = viewModel::onThemeSelected)
+    SettingsContent(uiState = uiState, onThemeSelected = viewModel::onThemeSelected)
 }
 
 @Composable
-private fun ProfileContent(
-    uiState: ProfileUiState,
+private fun SettingsContent(
+    uiState: SettingsUiState,
     onThemeSelected: (ThemeMode) -> Unit,
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.profile_title)) }) },
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.settings_title)) }) },
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(AppSpacing.medium)) {
             when (uiState) {
-                ProfileUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                SettingsUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
-                is ProfileUiState.Error -> Text(
-                    text = uiState.message,
+                SettingsUiState.Error -> Text(
+                    text = stringResource(R.string.error_generic),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
                 )
 
-                is ProfileUiState.Content -> Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
+                is SettingsUiState.Success -> Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.medium)) {
                     ProfileCard()
                     Text(
                         text = stringResource(R.string.profile_theme_section),
@@ -119,8 +119,8 @@ private fun ThemeOption(label: String, selected: Boolean, onSelect: () -> Unit) 
 
 @Preview(showBackground = true)
 @Composable
-private fun ProfileContentPreview() {
+private fun SettingsPreview() {
     MyExpressiveTheme {
-        ProfileContent(uiState = ProfileUiState.Content(ThemeMode.SYSTEM), onThemeSelected = {})
+        SettingsContent(uiState = SettingsUiState.Success(ThemeMode.SYSTEM), onThemeSelected = {})
     }
 }

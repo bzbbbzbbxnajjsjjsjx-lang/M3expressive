@@ -1,87 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyExpressiveApp</string>
-    <string name="home_title">Ana Sayfa</string>
+    <string name="home_title">Notlar</string>
     <string name="action_add">Ekle</string>
     <string name="action_search">Ara</string>
     <string name="action_filter">Filtrele</string>
     <string name="search_label">Başlık ara</string>
-    <string name="filter_all">Tüm kategoriler</string>
+    <string name="filter_all">Tümü</string>
     <string name="filter_category">Kategori: %1$s</string>
     <string name="no_results">Sonuç bulunamadı</string>
-    <string-array name="home_item_titles">
-        <item>Sabah toplantısı</item>
-        <item>Proje teslimi</item>
-        <item>Kod inceleme</item>
-        <item>Tasarım taslağı</item>
-        <item>Haftalık planlama</item>
-        <item>Market alışverişi</item>
-        <item>Kitap okuma</item>
-        <item>Arkadaş buluşması</item>
-        <item>Koşu</item>
-        <item>Su hatırlatıcısı</item>
-        <item>Uyku düzeni</item>
-        <item>Uçuş kontrolü</item>
-        <item>Bagaj listesi</item>
-        <item>Otel rezervasyonu</item>
-    </string-array>
-    <string-array name="home_item_subtitles">
-        <item>Ekip senkronizasyonu, 15 dakika</item>
-        <item>Raporun son gözden geçirmesi</item>
-        <item>İki açık pull request var</item>
-        <item>Ana ekran için yeni düzen</item>
-        <item>Gelecek haftanın öncelikleri</item>
-        <item>Süt, yumurta, ekmek</item>
-        <item>Bölüm 4, 20 sayfa</item>
-        <item>Cumartesi akşamı, 20:00</item>
-        <item>5 km, hafif tempo</item>
-        <item>Günlük hedef: 2 litre</item>
-        <item>Yatma saati 23:30</item>
-        <item>Check-in 24 saat önce açılır</item>
-        <item>Şarj aletleri ve ilaçlar</item>
-        <item>Onay e-postası bekleniyor</item>
-    </string-array>
-    <string-array name="home_item_categories">
-        <item>Çalışma</item>
-        <item>Çalışma</item>
-        <item>Çalışma</item>
-        <item>Çalışma</item>
-        <item>Çalışma</item>
-        <item>Kişisel</item>
-        <item>Kişisel</item>
-        <item>Kişisel</item>
-        <item>Sağlık</item>
-        <item>Sağlık</item>
-        <item>Sağlık</item>
-        <item>Seyahat</item>
-        <item>Seyahat</item>
-        <item>Seyahat</item>
-    </string-array>
     <string name="detail_title">Detay</string>
     <string name="detail_back">Geri</string>
     <string name="detail_not_found">Öğe bulunamadı</string>
-    <string name="tab_home">Ana Sayfa</string>
     <string name="tab_search">Arama</string>
-    <string name="tab_profile">Profil</string>
-    <string name="section_pending">Bekleyenler (%1$d)</string>
-    <string name="section_completed">Tamamlananlar (%1$d)</string>
-    <string name="search_hint">Görevlerde ara</string>
-    <string name="search_empty_hint">Aramak için bir şey yazın</string>
-    <string name="search_no_results">Eşleşen görev yok</string>
-    <string name="add_title">Yeni görev</string>
-    <string name="add_field_title">Başlık</string>
-    <string name="add_field_description">Açıklama</string>
-    <string name="add_field_category">Kategori</string>
-    <string name="add_save">Kaydet</string>
-    <string name="add_invalid">Başlık ve kategori boş olamaz</string>
-    <string name="detail_complete">Tamamla</string>
-    <string name="detail_reopen">Geri al</string>
+    <string name="search_hint">Notlarda ara</string>
     <string name="detail_delete">Sil</string>
-    <string name="profile_title">Profil</string>
     <string name="profile_name">Kullanıcı</string>
-    <string name="profile_subtitle">Görevlerinizi bu cihazda yönetin</string>
+    <string name="profile_subtitle">Notlarınızı bu cihazda tutun</string>
     <string name="profile_theme_section">Tema</string>
     <string name="theme_system">Sistem</string>
     <string name="theme_light">Açık</string>
     <string name="theme_dark">Koyu</string>
+    <string name="settings_title">Ayarlar</string>
+    <string name="tab_notes">Notlar</string>
+    <string name="tab_settings">Ayarlar</string>
+    <string name="profile_initial">K</string>
+    <string name="sort_newest">Yeni</string>
+    <string name="sort_oldest">Eski</string>
+    <string name="search_close">Kapat</string>
+    <string name="create_text_note">Metin notu</string>
+    <string name="create_text_glyph">✎</string>
+    <string name="note_back">Geri</string>
+    <string name="note_archive">Arşivle</string>
+    <string name="note_unarchive">Arşivden çıkar</string>
+    <string name="note_more">Daha fazla</string>
+    <string name="note_edit">Düzenle</string>
+    <string name="note_not_found">Not bulunamadı</string>
+    <string name="note_sheet_title">Not seçenekleri</string>
+    <string name="note_delete">Sil</string>
+    <string name="editor_close">Kapat</string>
+    <string name="editor_save">Kaydet</string>
+    <string name="editor_title_label">Başlık</string>
+    <string name="editor_category_label">Kategori</string>
+    <string name="editor_content_label">İçerik</string>
+    <string name="editor_invalid">Başlık ve kategori boş olamaz</string>
+    <string-array name="note_seed_titles">
+        <item>Alışveriş listesi</item>
+        <item>Proje fikirleri</item>
+        <item>Toplantı notu</item>
+        <item>Kitap önerileri</item>
+        <item>Tarif: makarna</item>
+        <item>Yol haritası</item>
+        <item>Eski bir not</item>
+        <item>Hafta sonu planı</item>
+    </string-array>
+    <string-array name="note_seed_contents">
+        <item>Süt, yumurta, ekmek, domates ve biraz peynir.</item>
+        <item>Ana ekran için hap şeklinde arama çubuğu ve kart düzeni denenecek.</item>
+        <item>Pazartesi toplantısında bütçe ve takvim konuşuldu. Cuma'ya kadar dönüş.</item>
+        <item>Sessiz Hayatlar, Kısa Yazılar, Bir Yaz Gecesi.</item>
+        <item>Makarna suya tuz ekleyip haşlanır, sosla karıştırılır.</item>
+        <item>Üç ay içinde ilk sürüm, altı ay içinde geri bildirim turu.</item>
+        <item>Bu not arşivlendi; artık ana listede görünmez.</item>
+        <item>Cumartesi yürüyüş, pazar sabahı kahvaltı.</item>
+    </string-array>
+    <string-array name="note_seed_categories">
+        <item>Kişisel</item>
+        <item>Çalışma</item>
+        <item>Çalışma</item>
+        <item>Okuma</item>
+        <item>Mutfak</item>
+        <item>Çalışma</item>
+        <item>Kişisel</item>
+        <item>Kişisel</item>
+    </string-array>
 </resources>

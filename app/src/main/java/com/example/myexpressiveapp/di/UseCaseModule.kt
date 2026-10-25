@@ -1,13 +1,13 @@
 package com.example.myexpressiveapp.di
 
+import com.example.myexpressiveapp.domain.repository.NoteRepository
 import com.example.myexpressiveapp.domain.repository.SettingsRepository
-import com.example.myexpressiveapp.domain.repository.TaskRepository
-import com.example.myexpressiveapp.domain.usecase.AddTaskUseCase
-import com.example.myexpressiveapp.domain.usecase.DeleteTaskUseCase
-import com.example.myexpressiveapp.domain.usecase.GetTasksUseCase
+import com.example.myexpressiveapp.domain.usecase.ArchiveNoteUseCase
+import com.example.myexpressiveapp.domain.usecase.DeleteNoteUseCase
+import com.example.myexpressiveapp.domain.usecase.GetNotesUseCase
 import com.example.myexpressiveapp.domain.usecase.ObserveThemeModeUseCase
+import com.example.myexpressiveapp.domain.usecase.SaveNoteUseCase
 import com.example.myexpressiveapp.domain.usecase.SetThemeModeUseCase
-import com.example.myexpressiveapp.domain.usecase.ToggleTaskUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,16 +19,16 @@ import dagger.hilt.components.SingletonComponent
 object UseCaseModule {
 
     @Provides
-    fun provideGetTasksUseCase(repository: TaskRepository): GetTasksUseCase = GetTasksUseCase(repository)
+    fun provideGetNotesUseCase(repository: NoteRepository): GetNotesUseCase = GetNotesUseCase(repository)
 
     @Provides
-    fun provideAddTaskUseCase(repository: TaskRepository): AddTaskUseCase = AddTaskUseCase(repository)
+    fun provideSaveNoteUseCase(repository: NoteRepository): SaveNoteUseCase = SaveNoteUseCase(repository)
 
     @Provides
-    fun provideDeleteTaskUseCase(repository: TaskRepository): DeleteTaskUseCase = DeleteTaskUseCase(repository)
+    fun provideDeleteNoteUseCase(repository: NoteRepository): DeleteNoteUseCase = DeleteNoteUseCase(repository)
 
     @Provides
-    fun provideToggleTaskUseCase(repository: TaskRepository): ToggleTaskUseCase = ToggleTaskUseCase(repository)
+    fun provideArchiveNoteUseCase(repository: NoteRepository): ArchiveNoteUseCase = ArchiveNoteUseCase(repository)
 
     @Provides
     fun provideObserveThemeModeUseCase(repository: SettingsRepository): ObserveThemeModeUseCase =

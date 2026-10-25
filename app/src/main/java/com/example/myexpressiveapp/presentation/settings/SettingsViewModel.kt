@@ -1,4 +1,4 @@
-package com.example.myexpressiveapp.presentation.profile
+package com.example.myexpressiveapp.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,18 +17,18 @@ import kotlinx.coroutines.launch
 private const val STATE_STOP_TIMEOUT_MS = 5_000L
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class SettingsViewModel @Inject constructor(
     observeThemeMode: ObserveThemeModeUseCase,
     private val setThemeMode: SetThemeModeUseCase,
 ) : ViewModel() {
 
-    val uiState: StateFlow<ProfileUiState> = observeThemeMode()
-        .map<ThemeMode, ProfileUiState> { ProfileUiState.Content(it) }
-        .catch { emit(ProfileUiState.Error(it.message.orEmpty())) }
+    val uiState: StateFlow<SettingsUiState> = observeThemeMode()
+        .map<ThemeMode, SettingsUiState> { SettingsUiState.Success(it) }
+        .catch { emit(SettingsUiState.Error) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STATE_STOP_TIMEOUT_MS),
-            initialValue = ProfileUiState.Loading,
+            initialValue = SettingsUiState.Loading,
         )
 
     fun onThemeSelected(mode: ThemeMode) {
