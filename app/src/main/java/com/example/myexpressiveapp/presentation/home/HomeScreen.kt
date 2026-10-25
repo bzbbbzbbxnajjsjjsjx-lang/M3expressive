@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.myexpressiveapp.R
 import com.example.myexpressiveapp.domain.model.HomeItem
 import com.example.myexpressiveapp.presentation.theme.AppSpacing
 
@@ -30,7 +32,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 private fun HomeContent(uiState: HomeUiState) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Ana Ekran") }) },
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.home_title)) }) },
     ) { innerPadding ->
         when (uiState) {
             HomeUiState.Loading -> Box(
