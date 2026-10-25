@@ -74,4 +74,5 @@
         <item>Kişisel</item>
         <item>Kişisel</item>
     </string-array>
+    <string name="error_generic">Bir hata oluştu</string>
 </resources>
