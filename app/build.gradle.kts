@@ -9,6 +9,21 @@ android {
     namespace = "com.example.myexpressiveapp"
     compileSdk = 37
 
+    // CI, release APK'yi her çalıştırmada üretilen geçici bir keystore ile imzalar.
+    // Ortam değişkeni yoksa (yerel derleme) release APK imzasız kalır.
+    val ciKeystorePath: String? = System.getenv("RELEASE_KEYSTORE_PATH")
+
+    signingConfigs {
+        if (ciKeystorePath != null) {
+            create("ci") {
+                storeFile = file(ciKeystorePath)
+                storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.myexpressiveapp"
         minSdk = 37
@@ -19,6 +34,9 @@ android {
 
     buildTypes {
         release {
+            if (ciKeystorePath != null) {
+                signingConfig = signingConfigs.getByName("ci")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
