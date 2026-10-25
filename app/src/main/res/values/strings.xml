@@ -57,4 +57,7 @@
         <item>Seyahat</item>
         <item>Seyahat</item>
     </string-array>
+    <string name="detail_title">Detay</string>
+    <string name="detail_back">Geri</string>
+    <string name="detail_not_found">Öğe bulunamadı</string>
 </resources>

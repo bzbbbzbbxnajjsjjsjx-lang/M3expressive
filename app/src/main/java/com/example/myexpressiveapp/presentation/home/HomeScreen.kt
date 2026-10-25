@@ -45,10 +45,14 @@ import com.example.myexpressiveapp.presentation.theme.AppSpacing
 import com.example.myexpressiveapp.presentation.theme.MyExpressiveTheme
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    onItemClick: (String) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeContent(
         uiState = uiState,
+        onItemClick = onItemClick,
         onSearchClick = viewModel::onSearchClick,
         onQueryChange = viewModel::onQueryChange,
         onFilterClick = viewModel::onFilterClick,
@@ -58,6 +62,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 private fun HomeContent(
     uiState: HomeUiState,
+    onItemClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
@@ -108,7 +113,11 @@ private fun HomeContent(
                             modifier = Modifier.padding(AppSpacing.medium),
                         )
                     } else {
-                        HomeItemList(items = uiState.items, modifier = Modifier.weight(1f))
+                        HomeItemList(
+                            items = uiState.items,
+                            onItemClick = onItemClick,
+                            modifier = Modifier.weight(1f),
+                        )
                     }
                 }
             }
@@ -130,7 +139,11 @@ private fun categoryLabel(category: String?): String =
     }
 
 @Composable
-private fun HomeItemList(items: List<HomeItem>, modifier: Modifier = Modifier) {
+private fun HomeItemList(
+    items: List<HomeItem>,
+    onItemClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(
@@ -141,7 +154,7 @@ private fun HomeItemList(items: List<HomeItem>, modifier: Modifier = Modifier) {
     ) {
         itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
             SegmentedListItem(
-                onClick = {},
+                onClick = { onItemClick(item.id) },
                 shapes = ListItemDefaults.segmentedShapes(index = index, count = items.size),
                 overlineContent = { Text(text = item.category, style = MaterialTheme.typography.labelMedium) },
                 supportingContent = { Text(text = item.subtitle) },
@@ -192,6 +205,7 @@ private fun HomeContentLoadingPreview() {
             onSearchClick = {},
             onQueryChange = {},
             onFilterClick = {},
+            onItemClick = {},
         )
     }
 }
@@ -214,6 +228,7 @@ private fun HomeContentItemsPreview() {
             onSearchClick = {},
             onQueryChange = {},
             onFilterClick = {},
+            onItemClick = {},
         )
     }
 }
@@ -227,6 +242,7 @@ private fun HomeContentErrorPreview() {
             onSearchClick = {},
             onQueryChange = {},
             onFilterClick = {},
+            onItemClick = {},
         )
     }
 }
