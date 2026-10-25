@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.myexpressiveapp.presentation.components
 
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.toPath
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
@@ -9,11 +12,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.graphics.shapes.Morph
-import com.example.myexpressiveapp.presentation.theme.ExpressiveUi
 
 // İki MaterialShapes arasında ilerleme değerine (0..1) göre şekil geçişi çizer.
 // Ölçekleme ve merkezleme, M3'ün RoundedPolygon.toShape() uygulamasıyla aynıdır.
-@ExpressiveUi
 class MorphShape(
     private val morph: Morph,
     private val progress: Float,

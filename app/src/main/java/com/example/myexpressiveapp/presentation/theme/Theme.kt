@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.myexpressiveapp.presentation.theme
 
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -10,7 +13,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-@ExpressiveUi
 @Composable
 fun MyExpressiveTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.myexpressiveapp.presentation.home
 
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,17 +39,14 @@ import com.example.myexpressiveapp.R
 import com.example.myexpressiveapp.domain.model.HomeItem
 import com.example.myexpressiveapp.presentation.components.MorphShape
 import com.example.myexpressiveapp.presentation.theme.AppSpacing
-import com.example.myexpressiveapp.presentation.theme.ExpressiveUi
 import com.example.myexpressiveapp.presentation.theme.MyExpressiveTheme
 
-@ExpressiveUi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeContent(uiState = uiState)
 }
 
-@ExpressiveUi
 @Composable
 private fun HomeContent(uiState: HomeUiState) {
     Scaffold(
@@ -77,7 +77,6 @@ private fun HomeContent(uiState: HomeUiState) {
     }
 }
 
-@ExpressiveUi
 @Composable
 private fun HomeItemList(items: List<HomeItem>) {
     LazyColumn(
@@ -99,7 +98,6 @@ private fun HomeItemList(items: List<HomeItem>) {
     }
 }
 
-@ExpressiveUi
 @Composable
 private fun MorphingToolbar(modifier: Modifier = Modifier) {
     var morphed by remember { mutableStateOf(false) }
@@ -128,7 +126,6 @@ private fun MorphingToolbar(modifier: Modifier = Modifier) {
     }
 }
 
-@ExpressiveUi
 @Preview(showBackground = true)
 @Composable
 private fun HomeContentLoadingPreview() {
@@ -137,7 +134,6 @@ private fun HomeContentLoadingPreview() {
     }
 }
 
-@ExpressiveUi
 @Preview(showBackground = true)
 @Composable
 private fun HomeContentItemsPreview() {
@@ -153,7 +149,6 @@ private fun HomeContentItemsPreview() {
     }
 }
 
-@ExpressiveUi
 @Preview(showBackground = true)
 @Composable
 private fun HomeContentErrorPreview() {
