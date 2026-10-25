@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyExpressiveApp</string>
-    <string name="home_title">Ana Ekran</string>
+    <string name="home_title">Ana Sayfa</string>
     <string name="action_add">Ekle</string>
     <string name="action_search">Ara</string>
     <string name="action_filter">Filtrele</string>
@@ -60,4 +60,28 @@
     <string name="detail_title">Detay</string>
     <string name="detail_back">Geri</string>
     <string name="detail_not_found">Öğe bulunamadı</string>
+    <string name="tab_home">Ana Sayfa</string>
+    <string name="tab_search">Arama</string>
+    <string name="tab_profile">Profil</string>
+    <string name="section_pending">Bekleyenler (%1$d)</string>
+    <string name="section_completed">Tamamlananlar (%1$d)</string>
+    <string name="search_hint">Görevlerde ara</string>
+    <string name="search_empty_hint">Aramak için bir şey yazın</string>
+    <string name="search_no_results">Eşleşen görev yok</string>
+    <string name="add_title">Yeni görev</string>
+    <string name="add_field_title">Başlık</string>
+    <string name="add_field_description">Açıklama</string>
+    <string name="add_field_category">Kategori</string>
+    <string name="add_save">Kaydet</string>
+    <string name="add_invalid">Başlık ve kategori boş olamaz</string>
+    <string name="detail_complete">Tamamla</string>
+    <string name="detail_reopen">Geri al</string>
+    <string name="detail_delete">Sil</string>
+    <string name="profile_title">Profil</string>
+    <string name="profile_name">Kullanıcı</string>
+    <string name="profile_subtitle">Görevlerinizi bu cihazda yönetin</string>
+    <string name="profile_theme_section">Tema</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
 </resources>

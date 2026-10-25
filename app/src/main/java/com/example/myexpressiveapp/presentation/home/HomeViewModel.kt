@@ -2,8 +2,8 @@ package com.example.myexpressiveapp.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myexpressiveapp.domain.model.HomeItem
-import com.example.myexpressiveapp.domain.usecase.GetHomeItemsUseCase
+import com.example.myexpressiveapp.domain.model.Task
+import com.example.myexpressiveapp.domain.usecase.GetTasksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ private const val STATE_STOP_TIMEOUT_MS = 5_000L
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getHomeItems: GetHomeItemsUseCase,
+    getTasks: GetTasksUseCase,
 ) : ViewModel() {
 
     private val query = MutableStateFlow("")
@@ -27,17 +27,19 @@ class HomeViewModel @Inject constructor(
     private val selectedCategory = MutableStateFlow<String?>(null)
 
     private val content: Flow<HomeUiState> = combine(
-        getHomeItems(),
+        getTasks(),
         query,
         isSearching,
         selectedCategory,
-    ) { items, currentQuery, searching, category ->
+    ) { tasks, currentQuery, searching, category ->
+        val visible = tasks.filter { it.matches(currentQuery, category) }
         HomeUiState.Content(
-            items = items.filter { it.isVisible(currentQuery, category) },
+            pending = visible.filterNot(Task::isCompleted),
+            completed = visible.filter(Task::isCompleted),
             query = currentQuery,
             isSearching = searching,
             selectedCategory = category,
-            categories = items.map(HomeItem::category).distinct(),
+            categories = tasks.map(Task::category).distinct(),
         )
     }
 
@@ -65,7 +67,7 @@ class HomeViewModel @Inject constructor(
         selectedCategory.value = next
     }
 
-    private fun HomeItem.isVisible(currentQuery: String, category: String?): Boolean =
+    private fun Task.matches(currentQuery: String, category: String?): Boolean =
         (category == null || this.category == category) &&
             (currentQuery.isBlank() || title.contains(currentQuery, ignoreCase = true))
 }

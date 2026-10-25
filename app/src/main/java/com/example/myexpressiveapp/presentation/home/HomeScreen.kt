@@ -9,20 +9,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalFloatingToolbar
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -39,20 +35,23 @@ import androidx.graphics.shapes.Morph
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.myexpressiveapp.R
-import com.example.myexpressiveapp.domain.model.HomeItem
+import com.example.myexpressiveapp.domain.model.Task
 import com.example.myexpressiveapp.presentation.components.MorphShape
+import com.example.myexpressiveapp.presentation.components.TaskList
 import com.example.myexpressiveapp.presentation.theme.AppSpacing
 import com.example.myexpressiveapp.presentation.theme.MyExpressiveTheme
 
 @Composable
 fun HomeScreen(
     onItemClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeContent(
         uiState = uiState,
         onItemClick = onItemClick,
+        onAddClick = onAddClick,
         onSearchClick = viewModel::onSearchClick,
         onQueryChange = viewModel::onQueryChange,
         onFilterClick = viewModel::onFilterClick,
@@ -63,6 +62,7 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onItemClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     onSearchClick: () -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
@@ -106,17 +106,23 @@ private fun HomeContent(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(horizontal = AppSpacing.medium, vertical = AppSpacing.small),
                     )
-                    if (uiState.items.isEmpty()) {
+                    if (uiState.pending.isEmpty() && uiState.completed.isEmpty()) {
                         Text(
                             text = stringResource(R.string.no_results),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(AppSpacing.medium),
                         )
                     } else {
-                        HomeItemList(
-                            items = uiState.items,
-                            onItemClick = onItemClick,
+                        TaskList(
+                            pending = uiState.pending,
+                            completed = uiState.completed,
+                            onTaskClick = onItemClick,
                             modifier = Modifier.weight(1f),
+                            contentPadding = PaddingValues(
+                                start = AppSpacing.medium,
+                                end = AppSpacing.medium,
+                                bottom = AppSpacing.toolbarClearance,
+                            ),
                         )
                     }
                 }
@@ -124,6 +130,7 @@ private fun HomeContent(
             MorphingToolbar(
                 onSearchClick = onSearchClick,
                 onFilterClick = onFilterClick,
+                onAddClick = onAddClick,
                 modifier = Modifier.align(Alignment.BottomCenter).padding(AppSpacing.medium),
             )
         }
@@ -139,35 +146,10 @@ private fun categoryLabel(category: String?): String =
     }
 
 @Composable
-private fun HomeItemList(
-    items: List<HomeItem>,
-    onItemClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(
-            start = AppSpacing.medium,
-            end = AppSpacing.medium,
-            bottom = AppSpacing.toolbarClearance,
-        ),
-    ) {
-        itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
-            SegmentedListItem(
-                onClick = { onItemClick(item.id) },
-                shapes = ListItemDefaults.segmentedShapes(index = index, count = items.size),
-                overlineContent = { Text(text = item.category, style = MaterialTheme.typography.labelMedium) },
-                supportingContent = { Text(text = item.subtitle) },
-                content = { Text(text = item.title, style = MaterialTheme.typography.titleMedium) },
-            )
-        }
-    }
-}
-
-@Composable
 private fun MorphingToolbar(
     onSearchClick: () -> Unit,
     onFilterClick: () -> Unit,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var morphed by remember { mutableStateOf(false) }
@@ -184,7 +166,10 @@ private fun MorphingToolbar(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { morphed = !morphed },
+                onClick = {
+                    morphed = !morphed
+                    onAddClick()
+                },
                 shape = fabShape,
             ) {
                 Text(text = stringResource(R.string.action_add))
@@ -198,51 +183,22 @@ private fun MorphingToolbar(
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeContentLoadingPreview() {
-    MyExpressiveTheme {
-        HomeContent(
-            uiState = HomeUiState.Loading,
-            onSearchClick = {},
-            onQueryChange = {},
-            onFilterClick = {},
-            onItemClick = {},
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeContentItemsPreview() {
+private fun HomeContentPreview() {
     MyExpressiveTheme {
         HomeContent(
             uiState = HomeUiState.Content(
-                items = listOf(
-                    HomeItem(id = "1", title = "Sabah toplantısı", subtitle = "15 dakika", category = "Çalışma"),
-                    HomeItem(id = "2", title = "Market alışverişi", subtitle = "Süt, yumurta", category = "Kişisel"),
-                ),
+                pending = listOf(Task("1", "Sabah toplantısı", "15 dakika", "Çalışma", isCompleted = false)),
+                completed = listOf(Task("2", "Market alışverişi", "Süt, yumurta", "Kişisel", isCompleted = true)),
                 query = "",
                 isSearching = false,
                 selectedCategory = null,
                 categories = listOf("Çalışma", "Kişisel"),
             ),
+            onItemClick = {},
+            onAddClick = {},
             onSearchClick = {},
             onQueryChange = {},
             onFilterClick = {},
-            onItemClick = {},
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeContentErrorPreview() {
-    MyExpressiveTheme {
-        HomeContent(
-            uiState = HomeUiState.Error(message = "Bir hata oluştu"),
-            onSearchClick = {},
-            onQueryChange = {},
-            onFilterClick = {},
-            onItemClick = {},
         )
     }
 }
